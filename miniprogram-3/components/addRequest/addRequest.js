@@ -114,71 +114,104 @@ Page({
               })
               return false
         }
-        else if(this.data.price.constructor !=typeof Number){
-            console.log(this.data.price.constructor)
-            wx.showToast({
-                title: '价格只能为数字',
-                icon: 'error',
-              })
-              return false
-        }
+        // else if(this.data.price.constructor !=typeof Number){
+        //     console.log(this.data.price.constructor)
+        //     wx.showToast({
+        //         title: '价格只能为数字',
+        //         icon: 'error',
+        //       })
+        //       return false
+        // }
         return true
      },
      //提交委托到数据库
+     upload(){
+        wx.hideLoading();
+        wx.cloud.database().collection('request').add({
+        data:{
+            title:this.data.title,
+            body:this.data.body,
+            hidden:this.data.hidden,
+            price:this.data.price,
+            img:this.data.newImg,
+            publishTime:'',
+            publisher: userinfo.openid,
+            publisher_name:userinfo.nickName,
+            receiver:'',
+            receiver_name:'' 
+        },
+        success(res){
+            console.log('发布成功', res)
+            wx-wx.navigateBack({
+                delta: 1
+            });
+            wx.showToast({
+                title: '发布成功',
+              })  
+            // wx.clearStorage()
+            wx.setStorageSync('title', '')
+            wx.setStorageSync('body', '')
+            wx.setStorageSync('hidden', '')
+            wx.setStorageSync('price', '')
+        }
+        })
+        //用户支付酬金
+     },
+     //上传图片到云存储
      handlePublish(){
+         //检查提交内容合法性
          if(!this.isEmpty()){
              return
          }
-        //上传图片到云存储
+        let that=this
         let img=this.data.img
-        var i
-        for(i=0; i<img.length;i++){
+        let newImg=this.data.newImg
+        var i=0
+        wx.showLoading({
+          title: '上传图片中',
+        })
+        // while(i!=img.length){
+        //     wx.cloud.uploadFile({
+        //         cloudPath: new Date().getTime()+'.png', //上传后的图片名 用时间戳的方式命名
+        //         filePath: img[i], //上传前的文件路径
+        //         success(res){
+        //           console.log("上传图片成功",res)
+        //         //   that.setData({ //newImg用于储存新的图片路径
+        //         //     newImg: [...newImg, ...res.fileID]
+        //         //   })
+        //           that.data.newImg.push(res.fileID)
+        //           console.log('--', newImg)
+        //           i+=1
+        //           if(i==img.length){
+        //             console.log('图片路径', newImg)
+        //             wx.hideLoading();
+        //           }
+        //         },
+        //         fail:console.error
+        //     })
+        // }
+        img.forEach((v,j) =>{
             wx.cloud.uploadFile({
-                cloudPath: new Date().getTime()+'.png', //上传后的图片路径 用时间戳的方式命名
-                filePath: img[i], //上传前的文件路径
+                cloudPath: new Date().getTime()+'.png', //上传后的图片名 用时间戳的方式命名
+                filePath: v, //上传前的文件路径
                 success(res){
                   console.log("上传图片成功",res)
-                  that.setData({ //newImg用于储存新的图片路径
-                    newImg: [...this.data.newImg, ...res.fileID]
-                  })
+                //   this.setData({ //newImg用于储存新的图片路径
+                //     newImg: [...newImg, ...res.fileID]
+                //   })
+                  that.data.newImg.push(res.fileID)
                   console.log('--', newImg)
                 },
                 fail:console.error
-              })
-        }
-        console.log('图片路径', this.data.newImg)
-        wx.cloud.database().collection('request').add({
-            data:{
-                title:this.data.title,
-                body:this.data.body,
-                hidden:this.data.hidden,
-                price:this.data.price,
-                img:this.data.newImg,
-                publishTime:'',
-                publisher: userinfo.openid,
-                publisher_name:userinfo.nickName,
-                receiver:'',
-                receiver_name:'' 
-            },
-            success(res){
-                console.log('发布成功', res)
-                wx-wx.navigateBack({
-                    delta: 1
-                });
-                wx.showToast({
-                    title: '发布成功',
-                  })  
-                // wx.clearStorage()
-                wx.setStorageSync('title', '')
-                wx.setStorageSync('body', '')
-                wx.setStorageSync('hidden', '')
-                wx.setStorageSync('price', '')
+            })
+            if(j==img.length-1){ //如果全部图片上传成功，再上传委托到数据库
+                console.log('图片路径', newImg)
+                setTimeout(that.upload,1000) //1秒后上传
             }
         })
-     },
+    },
      handleChange(){
         const item=this.data.item
-        this.isEmpty()
         console.log('修改',item)
         if(item.receiver!=''){
             wx.showToast({
@@ -193,7 +226,6 @@ Page({
                 title:item.title,
                 body:item.body,
                 hidden:item.hidden,
-                price:item.price,
             },
             success: function(res) {
                 console.log('更新成功',res)

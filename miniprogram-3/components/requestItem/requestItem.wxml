@@ -17,7 +17,7 @@
     </view>
 
     <view class="price">报酬：{{requestItem.price}}元</view>
-    <view wx:if="{{requestItem.img}}">
+    <view wx:if="{{requestItem.img.length>0}}">
         <swiper autoplay interval="2000" circular indicator-dots indicator-color="#ffffff">
             <swiper-item wx:for="{{requestItem.img}}">
                 <image mode="widthFix" src="{{item}}"/>

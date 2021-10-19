@@ -1,0 +1,7 @@
+/* pages/information/information.wxss */
+.information{
+    height: 5vh;
+    margin: 10rpx;
+    border-bottom: 1rpx solid black;
+    background-color:ghostwhite;
+}

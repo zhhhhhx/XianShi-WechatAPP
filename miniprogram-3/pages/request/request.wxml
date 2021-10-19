@@ -1,7 +1,7 @@
 <!--pages/request/request.wxml-->
 <Tabs tabs="{{tabs}}" binditemChange="handleItemChange">
     <block wx:if="{{tabs[0].isActive}}">
-        这是委托 样式有bug 已使用云数据库 已完成分页 已完成跳转详情
+        这是委托 图片相关逻辑功能已完成 但样式有点问题
         <!-- 委托的模块 -->
         <view class="first_tab">
             <!-- wx:if用于过滤掉有接受人和自己发布的委托 -->
@@ -12,7 +12,10 @@
             url="../../components/requestItem/requestItem?id={{item._id}}">
                 <!-- 左边是图片容器 暂时随便用一张图片-->
                 <view class="img_wrap">
-                    <image mode="widthFix" src="https://img.alicdn.com/tfs/TB1FjZ7VWL7gK0jSZFBXXXZZpXa-520-280.png"></image>
+                    <image mode="widthFix" wx:if="{{item.img.length>0}}" src="{{item.img[0]}}"></image>
+                    <!-- 默认图片 -->
+                    <image mode="widthFix" src="../../icon/noPictures.png"></image>
+                   
                 </view>
                 <!-- 右边是文字容器 -->
                 <view class="info_wrap">

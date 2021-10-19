@@ -27,6 +27,7 @@ Page({
         }
     })*/
     onLoad: function (options) {
+        console.log(options)
         const userinfo=wx.getStorageSync('userinfo')
         this.setData({userinfo})
         const who=options.who

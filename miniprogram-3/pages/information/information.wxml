@@ -1,0 +1,4 @@
+<!--pages/information/information.wxml-->
+<view wx:for="{{informationList}}">
+    <view class="information">{{item.information_content}}</view>
+</view>

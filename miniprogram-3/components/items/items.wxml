@@ -1,4 +1,4 @@
-<!--pages/myTask/myTask.wxml-->
+<!--components/items.wxml-->
 <view class="first_tab">
             <navigator class="item" 
             wx:for="{{requestList}}"  
