@@ -6,6 +6,10 @@
 
 ## 文件构成：
 
+<details>
+
+   <summary>展开查看文件构成</summary>
+
 1. **components 组件** 
 
    存放公共组件供其他页面使用
@@ -48,7 +52,13 @@
    
    都是系统默认创建的文件 可以忽视
    
+</details>
+   
 ## GitHub 使用流程:new:
+
+<details>
+
+   <summary>展开查看文件构成</summary>
 
 1. 将组织的[源仓库](https://github.com/XianShi-APP/XianShi-WechatAPP)『fork』到个人的仓库中去（位置在页面右上角）
 2. 编码等等操作后，更新个人仓库（**请所有操作下面有『Commit changes』的都简单说明一下工作的内容和位置，下略**）
@@ -57,7 +67,7 @@
 5. 测试人员（目前暂定为钟卓江）简单测试后将对应的『Branch』合并到的 develop branch 中
 6. 系统集成测试完成后将 develop branch 合并到 main branch 中，创建tag保存版本代码，main branch 和对应的 tag 是我们演示和可交付的稳定版本
 
-
+</details>
     
 ## 目前已知问题
 
