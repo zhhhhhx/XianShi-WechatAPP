@@ -58,7 +58,7 @@
 
 <details>
 
-   <summary>展开查看文件构成</summary>
+   <summary>展开查看使用流程</summary>
 
 1. 将组织的[源仓库](https://github.com/XianShi-APP/XianShi-WechatAPP)『fork』到个人的仓库中去（位置在页面右上角）
 2. 编码等等操作后，更新个人仓库（**请所有操作下面有『Commit changes』的都简单说明一下工作的内容和位置，下略**）
