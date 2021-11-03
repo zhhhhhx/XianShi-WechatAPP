@@ -52,7 +52,7 @@
 
 1. 将组织的[源仓库](https://github.com/XianShi-APP/XianShi-WechatAPP)『fork』到个人的仓库中去（位置在页面右上角）
 2. 编码等等操作后，更新个人仓库（**请所有操作下面有『Commit changes』的都简单说明一下工作的内容和位置，下略**）
-3. 在个人仓库那里提交『Pull Requests』到组织的[源仓库](https://github.com/XianShi-APP/XianShi-WechatAPP)中的一个新『Branch』里面去（**branch注意命名规范，见PPT**）
+3. 在个人仓库那里提交『Pull Requests』到组织的[源仓库](https://github.com/XianShi-APP/XianShi-WechatAPP)中的一个新『Branch』里面去（**branch注意命名规范和使用tag，见PPT。这个Branch要自己先去源仓库创建**）
 4. 钟卓江负责同意『Pull Requests』的合并，维护仓库的稳定（如果不是pull到一个新branch是不应该同意merge的），同时了解工作情况和控制项目进度
 5. 测试人员（目前暂定为钟卓江）简单测试后将对应的『Branch』合并到的 develop branch 中
 6. 系统集成测试完成后将 develop branch 合并到 main branch 中，main branch 是我们演示和可交付的稳定版本
