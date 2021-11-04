@@ -1,8 +1,8 @@
 // components/requestItem/requestItem.js
 let utils=require('../../utils/util.js')
 // import {ObservableImpl} from '../../utils/service'
-let service=require('../../utils/service.js')
-let a=new service.RequestObserver()
+// let service=require('../../utils/service.js')
+// let a=new service.RequestObserver()
 import {RequestService} from '../../utils/requestService'
 let requestService=new RequestService()
 Page({
@@ -432,25 +432,38 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-        a.update()
+        // a.update()
+        let that=this
         console.log('委托详情页接收到',options)
         if(options.who==0 ||options.who==1){
             this.setData({
                 who: options.who
             })
         }
-        wx.cloud.database().collection('request')
-        .doc(options.id)
-        .get().then(res=>{
-            console.log('委托详情页获取成功',res)
-            this.setData({
-                requestItem:res.data
-            })
-            this.getChat()
+
+        let res=requestService.dbDocument('request',options.id,'委托详情页获取成功')
+        res.then(function(result){
+            if(result!=false){
+                that.setData({
+                    requestItem:result.data
+                })
+                that.getChat()
+            }
         })
-        .catch(res=>{
-            console.log('委托详情页获取失败',res)
-        })
+
+        // wx.cloud.database().collection('request')
+        // .doc(options.id)
+        // .get().then(res=>{
+        //     console.log('委托详情页获取成功',res)
+        //     this.setData({
+        //         requestItem:res.data
+        //     })
+        //     this.getChat()
+        // })
+        // .catch(res=>{
+        //     console.log('委托详情页获取失败',res)
+        // })
+
         const userInfo=wx.getStorageSync('userinfo')
         this.setData({userInfo})
     },

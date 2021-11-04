@@ -1,4 +1,6 @@
 // pages/myTask/myTask.js
+import {RequestService} from '../../utils/requestService'
+let requestService=new RequestService()
 Page({
 
     /**
@@ -28,27 +30,40 @@ Page({
     })*/
     //获取此用户的相关委托
     onLoad: function (options) {
+        let that=this
         console.log(options)
         const userinfo=wx.getStorageSync('userinfo')
-        this.setData({userinfo})
+        that.setData({userinfo})
         const who=options.who
-        this.setData({who})
+        that.setData({who})
         const _ = wx.cloud.database().command
         if(who==0){ //如果操作者是接受人
-            wx.cloud.database().collection('request')
-            .where({
+            let where={
                 receiver: _.eq(options.id)
-                // receiver: _.eq('idxxx')
+            }
+            let res=requestService.dbSearch('request',where,'个人任务页获取成功')
+            res.then(function(result){
+                if(result!=false){
+                    that.setData({
+                        requestList:result.data
+                    })
+                }
             })
-            .get().then(res=>{
-                console.log('个人任务页获取成功',res)
-                this.setData({
-                    requestList:res.data
-                })
-            })
-            .catch(res=>{
-                console.log('个人任务页获取失败',res)
-            })
+
+            // wx.cloud.database().collection('request')
+            // .where({
+            //     receiver: _.eq(options.id)
+            //     // receiver: _.eq('idxxx')
+            // })
+            // .get().then(res=>{
+            //     console.log('个人任务页获取成功',res)
+            //     this.setData({
+            //         requestList:res.data
+            //     })
+            // })
+            // .catch(res=>{
+            //     console.log('个人任务页获取失败',res)
+            // })
         }
         else if(who==1){ //如果操作者是发布人
             //修改跳转地址到添加委托的页面
@@ -56,19 +71,31 @@ Page({
                 url: '../../components/addRequest/addRequest?id='
             })
             //修改查询目标到发布者
-            wx.cloud.database().collection('request')
-        .where({
-            publisher: _.eq(options.id)
-        })
-        .get().then(res=>{
-            console.log('个人委托页获取成功',res)
-            this.setData({
-                requestList:res.data
+            let where={
+                publisher: _.eq(options.id)
+            }
+            let res=requestService.dbSearch('request',where,'个人任务页获取成功')
+            res.then(function(result){
+                if(result!=false){
+                    that.setData({
+                        requestList:result.data
+                    })
+                }
             })
-        })
-        .catch(res=>{
-            console.log('个人委托页获取失败',res)
-        })
+
+        //     wx.cloud.database().collection('request')
+        // .where({
+        //     publisher: _.eq(options.id)
+        // })
+        // .get().then(res=>{
+        //     console.log('个人委托页获取成功',res)
+        //     this.setData({
+        //         requestList:res.data
+        //     })
+        // })
+        // .catch(res=>{
+        //     console.log('个人委托页获取失败',res)
+        // })
         }
         else  console.error();
     },

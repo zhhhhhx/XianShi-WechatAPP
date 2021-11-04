@@ -41,12 +41,12 @@ class RequestService{
                 success(res){
                 console.log(log, res)
                 reslove(true)
-            },
+                },
                 fail(res){
                 console.log('删除数据失败',res)
                 reslove(false)
-            }
-        })
+                }
+            })
         })
     }
     //where查询
@@ -66,7 +66,38 @@ class RequestService{
             })
         })
     }
+    //根据_id查询
+    dbDocument(db,_id,log){
+        return new Promise((reslove, reject) =>{
+            wx.cloud.database().collection(db)
+            .doc(_id)
+            .get().then(res=>{
+                console.log(log, res)
+                reslove(res)
+            })
+            .catch(res=>{
+                console.log('查找失败',res)
+                reslove(false)
+            })
+        })
+    }
 }
+
+// let res=requestService.dbAdd('request',data,'发表评论成功')
+//         res.then(function(result){
+//             if(result){
+                
+//             }
+//         })
+
+// let res=requestService.dbDocument('request',options.id,'发布页获取成功')
+//             res.then(function(result){
+//                 if(result!=false){
+//                     that.setData({
+                        
+//                     })
+//                 }
+//             })
 
 module.exports={
     RequestService:RequestService,

@@ -1,6 +1,7 @@
 // components/addRequest/addRequest.js
 let userinfo=wx.getStorageSync('userinfo')
-
+import {RequestService} from '../../utils/requestService'
+let requestService=new RequestService()
 Page({
 
     /**
@@ -127,8 +128,7 @@ Page({
      //提交委托到数据库
      upload(){
         wx.hideLoading();
-        wx.cloud.database().collection('request').add({
-        data:{
+        let data={
             title:this.data.title,
             body:this.data.body,
             hidden:this.data.hidden,
@@ -139,23 +139,54 @@ Page({
             publisher_name:userinfo.nickName,
             receiver:'',
             receiver_name:'' 
-        },
-        success(res){
-            console.log('发布成功', res)
-            wx-wx.navigateBack({
-                delta: 1
-            });
-            wx.showToast({
-                title: '发布成功',
-              })  
-            // wx.clearStorage()
-            wx.setStorageSync('title', '')
-            wx.setStorageSync('body', '')
-            wx.setStorageSync('hidden', '')
-            wx.setStorageSync('price', '')
         }
+        let res=requestService.dbAdd('request',data,'发布成功')
+        res.then(function(result){
+            if(result){
+                wx-wx.navigateBack({
+                    delta: 1
+                });
+                wx.showToast({
+                    title: '发布成功',
+                  })  
+                // wx.clearStorage()
+                wx.setStorageSync('title', '')
+                wx.setStorageSync('body', '')
+                wx.setStorageSync('hidden', '')
+                wx.setStorageSync('price', '')
+            }
         })
-        //用户支付酬金
+
+        // wx.cloud.database().collection('request').add({
+        // data:{
+        //     title:this.data.title,
+        //     body:this.data.body,
+        //     hidden:this.data.hidden,
+        //     price:this.data.price,
+        //     img:this.data.newImg,
+        //     publishTime:'',
+        //     publisher: userinfo.openid,
+        //     publisher_name:userinfo.nickName,
+        //     receiver:'',
+        //     receiver_name:'' 
+        // },
+        // success(res){
+        //     console.log('发布成功', res)
+        //     wx-wx.navigateBack({
+        //         delta: 1
+        //     });
+        //     wx.showToast({
+        //         title: '发布成功',
+        //       })  
+        //     // wx.clearStorage()
+        //     wx.setStorageSync('title', '')
+        //     wx.setStorageSync('body', '')
+        //     wx.setStorageSync('hidden', '')
+        //     wx.setStorageSync('price', '')
+        // }
+        // })
+
+        /*用户支付酬金*/
      },
      //上传图片到云存储
      handlePublish(){
@@ -239,7 +270,8 @@ Page({
     },
     //修改委托
      handleChange(){
-        const item=this.data.item
+         let that=this
+        const item=that.data.item
         console.log('修改',item)
         if(item.receiver!=''){
             wx.showToast({
@@ -248,24 +280,43 @@ Page({
               })
               return
         }
-        wx.cloud.database().collection('request').doc(item._id)
-        .update({
-            data:{
-                title:item.title,
-                body:item.body,
-                hidden:item.hidden,
-            },
-            success: function(res) {
-                console.log('更新成功',res)
-                wx.showToast({
-                  title: '修改成功',
-                })
-              },
-            fail(res){
-                console.log('更新失败',res)
+        let data={
+                title:that.data.title,
+                body:that.data.body,
+                hidden:that.data.hidden,
             }
-            
+            console.log('data',data)
+        let res=requestService.dbUpdate ('request',item._id,data,'更新成功')
+        res.then(function(result){
+            if(result){
+                wx.showToast({
+                    title: '修改成功',
+                  })
+                wx.setStorageSync('title', '')
+                wx.setStorageSync('body', '')
+                wx.setStorageSync('hidden', '')
+                wx.setStorageSync('price', '')
+            }
         })
+
+        // wx.cloud.database().collection('request').doc(item._id)
+        // .update({
+        //     data:{
+        //         title:item.title,
+        //         body:item.body,
+        //         hidden:item.hidden,
+        //     },
+        //     success: function(res) {
+        //         console.log('更新成功',res)
+        //         wx.showToast({
+        //           title: '修改成功',
+        //         })
+        //       },
+        //     fail(res){
+        //         console.log('更新失败',res)
+        //     }
+            
+        // })
      },
      
      //删除前弹窗提示
@@ -297,11 +348,10 @@ Page({
               })
               return
         }
-        wx.cloud.database().collection('request').doc(item._id)
-        .remove({
-            success: function(res) {
-                console.log('删除成功',res)
-                console.log(that.data.item.img)
+
+        let res=requestService.dbDelete('request',item._id,'删除成功')
+        res.then(function(result){
+            if(result){
                 if(that.data.item.img!=[]){ //删除云存储的图片
                     wx.cloud.deleteFile({
                         fileList: that.data.item.img,
@@ -318,12 +368,34 @@ Page({
                 })
             }
         })
+        // wx.cloud.database().collection('request').doc(item._id)
+        // .remove({
+        //     success: function(res) {
+        //         console.log('删除成功',res)
+        //         console.log(that.data.item.img)
+        //         if(that.data.item.img!=[]){ //删除云存储的图片
+        //             wx.cloud.deleteFile({
+        //                 fileList: that.data.item.img,
+        //                 success: res =>{
+        //                     console.log('图片删除成功')
+        //                 },
+        //                 fail: err => {
+        //                     console.error();
+        //                   },
+        //             })
+        //         }
+        //         wx.showToast({
+        //           title: '删除成功',
+        //         })
+        //     }
+        // })
      },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
+        let that=this
         //如果是从'个人中心'的'发布委托'跳转来
         if(options.id==-1){
             this.setData({
@@ -344,27 +416,50 @@ Page({
             this.setData({
                 optionsId:options.id
             })
-            wx.cloud.database().collection('request')
-            .doc(options.id)
-            .get().then(res=>{
-                console.log('发布页获取成功',res)
-                this.setData({
-                    item:res.data,
-                    options:1,
-                    title:res.data.title,
-                    body:res.data.body,
-                    hidden:res.data. hidden,
-                    receiver: res.data.receiver,
-                    receiver_name:res.data.receiver_name
-                })
+
+            let res=requestService.dbDocument('request',options.id,'发布页获取成功')
+            res.then(function(result){
+                if(result!=false){
+                    that.setData({
+                        item:result.data,
+                        options:1,
+                        title:result.data.title,
+                        body:result.data.body,
+                        hidden:result.data. hidden,
+                        receiver: result.data.receiver,
+                        receiver_name:result.data.receiver_name
+                    })
+                }
+                else {
+                    console.log('发布页获取失败',res)
+                    wx.showToast({
+                        title: '委托已完成或已删除',
+                        icon:'none'
+                    })
+                }
             })
-            .catch(res=>{
-                console.log('发布页获取失败',res)
-                wx.showToast({
-                  title: '委托已完成或已删除',
-                  icon:'none'
-                })
-            }) 
+
+            // wx.cloud.database().collection('request')
+            // .doc(options.id)
+            // .get().then(res=>{
+            //     console.log('发布页获取成功',res)
+            //     this.setData({
+            //         item:res.data,
+            //         options:1,
+            //         title:res.data.title,
+            //         body:res.data.body,
+            //         hidden:res.data. hidden,
+            //         receiver: res.data.receiver,
+            //         receiver_name:res.data.receiver_name
+            //     })
+            // })
+            // .catch(res=>{
+            //     console.log('发布页获取失败',res)
+            //     wx.showToast({
+            //       title: '委托已完成或已删除',
+            //       icon:'none'
+            //     })
+            // }) 
         }
     },
 

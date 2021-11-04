@@ -101,6 +101,7 @@ Page({
      */
     onLoad: function (options) {
        this.getDBList()
+       
        wx.cloud.database().collection('request').count()
         .then(res=>{
             totalNum=res.total
