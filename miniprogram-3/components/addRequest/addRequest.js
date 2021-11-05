@@ -2,6 +2,7 @@
 let userinfo=wx.getStorageSync('userinfo')
 import {RequestService} from '../../utils/requestService'
 let requestService=new RequestService()
+
 Page({
 
     /**
@@ -395,6 +396,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
+
         let that=this
         //如果是从'个人中心'的'发布委托'跳转来
         if(options.id==-1){

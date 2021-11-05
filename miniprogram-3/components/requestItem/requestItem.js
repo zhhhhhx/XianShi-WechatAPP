@@ -5,12 +5,14 @@ let utils=require('../../utils/util.js')
 // let a=new service.RequestObserver()
 import {RequestService} from '../../utils/requestService'
 let requestService=new RequestService()
+
 Page({
 
     /**
      * 页面的初始数据
      */
     data: {
+
         requestItem:{}, //委托具体信息
         chatList:[], //评论列表
         chat:'', //用户输入评论

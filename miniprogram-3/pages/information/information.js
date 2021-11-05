@@ -3,12 +3,14 @@ let totalNum=-1
 let utils=require('../../utils/util.js')
 import {RequestService} from '../../utils/requestService'
 let requestService=new RequestService()
+
 Page({
 
     /**
      * 页面的初始数据
      */
     data: {
+
         informationList:[], //存放消息数据
         isHidden:true, //是否隐藏复选框
         buttonText:['删除','取消'], //按钮显示文本
