@@ -1,6 +1,7 @@
 // pages/search/search.js
 let Timeid=-1 //防抖的定时器
-const DB=wx.cloud.database()
+import {RequestService} from '../../utils/requestService'
+let requestService=new RequestService()
 Page({
 
     /**
@@ -27,11 +28,12 @@ Page({
       inputValue:''
     },
 
-    //获得复选框的勾选情况
+    //获取复选框的勾选情况
     handleChange(e){
       this.setData({
         checkResult: e.detail.value
       })
+      console.log(this.data.checkResult)
     },
 
     // //判断字符串是否在列表内
@@ -48,88 +50,142 @@ Page({
 
     // 获取用户输入的关键词
     getInput(options){
+      let that=this
       const {value}=options.detail;
-      let checkResult=this.data.checkResult;
+      let checkResult=that.data.checkResult;
       // console.log(checkResult)
       // let t='title'
       // console.log(t in checkResult)
       if (!value.trim() || checkResult.length==0){   //trim()检查输入合法性
-        this.setData({
+        that.setData({
           requestList:[],
           isFocus:false
         })
         return;
       }
-      this.setData({ //显示清空按钮
+      that.setData({ //显示清空按钮
         isFocus:true
       })
-      const _ = DB.command
-      clearTimeout(this.Timeid) //清除定时器
-      this.Timeid=setTimeout(()=>{
+      const _ = wx.cloud.database().command
+      clearTimeout(that.Timeid) //清除定时器
+      that.Timeid=setTimeout(()=>{
         if(checkResult.length==2){ //如果两个都选了，就同时检索标题和内容
-          DB.collection('request')
-          .where(_.or({
-            title: DB.RegExp({
-              regexp: options.detail.value,  
-              options:'i'
-            })
-          },
-          {body: DB.RegExp({
-            regexp: options.detail.value ,
-            options:'i'
-            })
-          }
-          ))
-          .get().then(res=>{
-            console.log('搜索成功',res)
-            this.setData({
-              requestList:[...this.data.requestList,...res.data]
-            })
-          })
-          .catch(res=>{
-            console.log('搜索失败',res)
-          })
-        }
-        else if(checkResult.length==1){ //如果只选了一个
-          if(checkResult[0]=='title'){ //选了标题
-            DB.collection('request')
-            .where({
-              title: DB.RegExp({
+          let where=(
+            _.or({
+              title: wx.cloud.database().RegExp({
                 regexp: options.detail.value,  
                 options:'i'
               })
-            })
-            .get().then(res=>{
-              console.log('搜索标题成功',res)
-              this.setData({
-                requestList:[...this.data.requestList,...res.data]
+            },
+            {body: wx.cloud.database().RegExp({
+              regexp: options.detail.value ,
+              options:'i'
               })
             })
-            .catch(res=>{
-              console.log('搜索标题失败',res)
+          )
+          let res=requestService.dbSearch('request',where,'搜索成功')
+          res.then(function(result){
+            if(result!=false){
+              that.setData({
+                requestList:[...that.data.requestList,...result.data]
+              })
+            }
+          })
+
+          // wx.cloud.database().collection('request')
+          // .where(_.or({
+          //   title: wx.cloud.database().RegExp({
+          //     regexp: options.detail.value,  
+          //     options:'i'
+          //   })
+          // },
+          // {body: wx.cloud.database().RegExp({
+          //   regexp: options.detail.value ,
+          //   options:'i'
+          //   })
+          // }
+          // ))
+          // .get().then(res=>{
+          //   console.log('搜索成功',res)
+          //   this.setData({
+          //     requestList:[...this.data.requestList,...res.data]
+          //   })
+          // })
+          // .catch(res=>{
+          //   console.log('搜索失败',res)
+          // })
+        }
+        else if(checkResult.length==1){ //如果只选了一个
+          if(checkResult[0]=='title'){ //选了标题
+            let where={
+              title: wx.cloud.database().RegExp({
+                regexp: options.detail.value,  
+                options:'i'
+              })
+            }
+            let res=requestService.dbSearch('request',where,'搜索成功')
+            res.then(function(result){
+              if(result!=false){
+                that.setData({
+                  requestList:[...that.data.requestList,...result.data]
+                })
+              }
             })
+            
+            // wx.cloud.database().collection('request')
+            // .where({
+            //   title: wx.cloud.database().RegExp({
+            //     regexp: options.detail.value,  
+            //     options:'i'
+            //   })
+            // })
+            // .get().then(res=>{
+            //   console.log('搜索标题成功',res)
+            //   this.setData({
+            //     requestList:[...this.data.requestList,...res.data]
+            //   })
+            // })
+            // .catch(res=>{
+            //   console.log('搜索标题失败',res)
+            // })
           }
           if(checkResult[0]=='body'){ //选了内容
-            DB.collection('request')
-            .where({
-              body: DB.RegExp({
+            let where={
+              body: wx.cloud.database().RegExp({
                 regexp: options.detail.value ,
                 options:'i'
               })
+            }
+            let res=requestService.dbSearch('request',where,'搜索成功')
+            res.then(function(result){
+              if(result!=false){
+                that.setData({
+                  requestList:[...that.data.requestList,...result.data]
+                })
+              }
             })
-            .get().then(res=>{
-              console.log('搜索内容成功',res)
-              this.setData({
-                requestList:[...this.data.requestList,...res.data]
-              })
-            })
-            .catch(res=>{
-              console.log('搜索内容失败',res)
-            })
+
+            // wx.cloud.database().collection('request')
+            // .where({
+            //   body: wx.cloud.database().RegExp({
+            //     regexp: options.detail.value ,
+            //     options:'i'
+            //   })
+            // })
+            // .get().then(res=>{
+            //   console.log('搜索内容成功',res)
+            //   this.setData({
+            //     requestList:[...this.data.requestList,...res.data]
+            //   })
+            // })
+            // .catch(res=>{
+            //   console.log('搜索内容失败',res)
+            // })
           }
         }
       },500) //0.5秒后发送请求，0.5秒内有新输入则刷新
     },
+    //清空搜索框
     handleClear(){
       this.setData({
         requestList:[],
