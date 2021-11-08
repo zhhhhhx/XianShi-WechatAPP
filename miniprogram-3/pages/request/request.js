@@ -1,6 +1,8 @@
 // pages/request/request.js
 let totalNum=-1
-let utils=require('../../utils/util.js')
+// let utils=require('../../utils/util.js')
+import {RequestService} from '../../utils/monitor/requestService'
+let requestService=new RequestService()
 Page({
 
     /**
@@ -92,7 +94,7 @@ Page({
     getDBList(){
         let requestList=this.data.requestList
         //参数分别为this指针，数据库表名，存放结果的列表名，存放结果的列表，数据库表总长度
-        utils.getDBList(this,'request','requestList',requestList,totalNum)
+        requestService.getDBList(this,'request','requestList',requestList,totalNum)
     },
 
 
@@ -101,6 +103,7 @@ Page({
      */
     onLoad: function (options) {
        this.getDBList()
+       
        wx.cloud.database().collection('request').count()
         .then(res=>{
             totalNum=res.total

@@ -1,6 +1,5 @@
 // components/addRequest/addRequest.js
-let userinfo=wx.getStorageSync('userinfo')
-import {RequestService} from '../../utils/requestService'
+import {RequestService} from '../../utils/monitor/requestService'
 let requestService=new RequestService()
 
 Page({
@@ -8,7 +7,8 @@ Page({
     /**
      * 页面的初始数据
      */
-    data: {    
+    data: {
+        userinfo:{},    
         options:0, 
         optionsId:'',
         item:{},
@@ -19,8 +19,8 @@ Page({
         hidden:'',
         price:'',
         publishTime:'',
-        publisher: userinfo.openid,
-        publisher_name:userinfo.nickName,
+        publisher: '',
+        publisher_name:'',
         receiver:'',
         receiver_name: ''       
     },
@@ -127,7 +127,25 @@ Page({
         return true
      },
      //提交委托到数据库
-     upload(){
+     uploadRequest(){
+         let openid=this.data.userinfo.openid
+         if(openid==1){ //预防云函数失效导致未能获取openid
+                wx.cloud.callFunction({ //重新调用云函数
+                    name: 'getOpenid',
+                    complete: res=>{
+                      console.log('获取openid成功',res.result.openid)
+                        openid=res.result.openid
+                    }
+                  })
+                  if(openid==1){ //若依然未能获取则报错
+                    wx.showToast({
+                      title: '发生错误，请稍后再试',
+                      icon:'none'
+                    })
+                    return
+                }
+            }
+         
         wx.hideLoading();
         let data={
             title:this.data.title,
@@ -136,20 +154,24 @@ Page({
             price:this.data.price,
             img:this.data.newImg,
             publishTime:'',
-            publisher: userinfo.openid,
-            publisher_name:userinfo.nickName,
+            publisher: openid,
+            publisher_name:this.data.userinfo.nickName,
             receiver:'',
-            receiver_name:'' 
+            receiver_name:'',
+            state:1 //委托状态 1表示可接受 
         }
         let res=requestService.dbAdd('request',data,'发布成功')
         res.then(function(result){
             if(result){
-                wx-wx.navigateBack({
-                    delta: 1
-                });
+                
                 wx.showToast({
                     title: '发布成功',
-                  })  
+                }) 
+                setTimeout(function(){
+                    wx-wx.navigateBack({
+                        delta: 1,
+                    })
+                },500)
                 // wx.clearStorage()
                 wx.setStorageSync('title', '')
                 wx.setStorageSync('body', '')
@@ -189,64 +211,92 @@ Page({
 
         /*用户支付酬金*/
      },
-     //上传图片到云存储
+     //提交图片到云存储
+     uploadImg(){
+         let that=this
+        let img=this.data.img
+        let newImg=this.data.newImg
+        var i=0
+        if(that.img!=[]){
+            wx.showLoading({
+              title: '上传图片中',
+              mask:true
+            })
+            let promiseArr = []; //promise操作 实现同步请求
+            /* 不做promise的话，代码默认会异步实现，上传图片和上传委托会同时运行，而上传图片花费时间要长出数倍，所以会使得上传完委托而图片还在上传中，导致委托中图片不全甚至无图片 
+            用setTimeout可以强制延长上传委托的时间，但不够灵活 
+            目前发现即使使用promise，图片上传顺序仍然有误*/
+            img.forEach((v,j) =>{
+              promiseArr.push(new Promise((reslove, reject) => { //此处每次循环都会在promiseArr数组中添加一个Promise对象
+              wx.cloud.uploadFile({
+                  cloudPath: j+'-'+new Date().getTime()+'.png', 
+                  // cloudPath: j+'.png', 
+                  //上传后的图片名 用 编号-时间戳.jpg 的方式命名
+                  filePath: v, //上传前的文件路径
+                  success(res){
+                      reslove(); //reslove()表示此对象已经完成
+                      console.log('上传图片成功',res)
+                      //   this.setData({ //newImg用于储存新的图片路径
+                      //     newImg: [...newImg, ...res.fileID]
+                      //   })
+                      that.data.newImg.push(res.fileID)
+                      console.log('--', newImg)
+                  },
+                  fail:console.error
+              })
+              // if(j==img.length-1){ //如果全部图片上传成功，再上传委托到数据库
+                 
+              //     console.log('图片路径', newImg)
+              //     setTimeout(that.upload,3000) //3秒后上传
+              // }
+          }));
+          })
+          Promise.all(promiseArr).then(res=>{ //.all()确定promiseArr数组里的所有对象都已经完成后才会执行.then()里面的函数
+              let arr=that.data.newImg.sort()
+              console.log(arr)
+              that.setData({
+                  newImg:that.data.newImg
+              })
+              console.log('图片路径', newImg)
+              // setTimeout(that.upload,3000) //3秒后上传
+              that.uploadRequest()
+          })
+          }
+          else{
+              that.uploadRequest()
+          }
+     },
+
+     //处理发布请求
      handlePublish(){
          //检查提交内容合法性
          if(!this.isEmpty()){
              return
          }
         let that=this
-        let img=this.data.img
-        let newImg=this.data.newImg
-        var i=0
-        if(that.img!=[]){
-          wx.showLoading({
-            title: '上传图片中',
-            mask:true
-          })
-          let promiseArr = []; //promise操作 实现同步请求
-          /* 不做promise的话，代码默认会异步实现，上传图片和上传委托会同时运行，而上传图片花费时间要长出数倍，所以会使得上传完委托而图片还在上传中，导致委托中图片不全甚至无图片 
-          用setTimeout可以强制延长上传委托的时间，但不够灵活 
-          目前发现即使使用promise，图片上传顺序仍然有误*/
-          img.forEach((v,j) =>{
-            promiseArr.push(new Promise((reslove, reject) => { //此处每次循环都会在promiseArr数组中添加一个Promise对象
-            wx.cloud.uploadFile({
-                cloudPath: j+'-'+new Date().getTime()+'.png', 
-                // cloudPath: j+'.png', 
-                //上传后的图片名 用 编号-时间戳.jpg 的方式命名
-                filePath: v, //上传前的文件路径
-                success(res){
-                    reslove(); //reslove()表示此对象已经完成
-                    console.log('上传图片成功',res)
-                    //   this.setData({ //newImg用于储存新的图片路径
-                    //     newImg: [...newImg, ...res.fileID]
-                    //   })
-                    that.data.newImg.push(res.fileID)
-                    console.log('--', newImg)
-                },
-                fail:console.error
-            })
-            // if(j==img.length-1){ //如果全部图片上传成功，再上传委托到数据库
-               
-            //     console.log('图片路径', newImg)
-            //     setTimeout(that.upload,3000) //3秒后上传
-            // }
-        }));
-        })
-        Promise.all(promiseArr).then(res=>{ //.all()确定promiseArr数组里的所有对象都已经完成后才会执行.then()里面的函数
-            let arr=that.data.newImg.sort()
-            console.log(arr)
-            that.setData({
-                newImg:that.data.newImg
-            })
-            console.log('图片路径', newImg)
-            // setTimeout(that.upload,3000) //3秒后上传
-            that.upload()
-        })
-        }
-        else{
-            that.upload()
-        }
+
+       //可以获取用户是否永久订阅
+        // wx.getSetting({ 
+        //     withSubscriptions: true,
+        //     success(res){
+        //         console.log(res.subscriptionsSetting)
+        //     }
+        //   })
+
+        //订阅消息 永久订阅会自动跳过 不再出现
+        wx.requestSubscribeMessage({
+            tmplIds: ['MHlTe8N0J87AM1JTxCdGWfSc7mTQAPqeK7qUbaRQTz4'],
+            success(res){
+                console.log('订阅成功')
+                that.uploadImg()
+            },
+            fail(res){
+                console.log('订阅失败',res)
+                that.uploadImg()
+            }
+        }) 
+
+        
         // while(i!=img.length){
         //     wx.cloud.uploadFile({
         //         cloudPath: new Date().getTime()+'.png', //上传后的图片名 用时间戳的方式命名
@@ -396,8 +446,13 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-
         let that=this
+        let userinfo=wx.getStorageSync('userinfo')
+        this.setData({
+            userinfo: userinfo,
+            publisher: userinfo.openid,
+            publisher_name: userinfo.nickName
+        })
         //如果是从'个人中心'的'发布委托'跳转来
         if(options.id==-1){
             this.setData({

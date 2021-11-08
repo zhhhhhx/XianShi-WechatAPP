@@ -3,3 +3,4 @@
     <searchInput></searchInput>
     <view>这里是首页内容 进度0</view>
 </view>
+<button bindtap="a">点这里</button>
