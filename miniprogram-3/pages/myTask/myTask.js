@@ -1,8 +1,6 @@
 // pages/myTask/myTask.js
-
-import {RequestService} from '../../utils/requestService'
+import {RequestService} from '../../utils/monitor/requestService'
 let requestService=new RequestService()
-
 Page({
 
     /**
@@ -14,9 +12,7 @@ Page({
         who:0, //0表示接收者（默认），1表示发布者
         url:'../../components/requestItem/requestItem?id='
     },
-
     
-
     /**
      * 生命周期函数--监听页面加载
      */
@@ -68,7 +64,6 @@ Page({
             // .catch(res=>{
             //     console.log('个人任务页获取失败',res)
             // })
-
         }
         else if(who==1){ //如果操作者是发布人
             //修改跳转地址到添加委托的页面

@@ -27,7 +27,6 @@ Page({
     },
 
     //获取微信用户信息并保存到缓存中
-
     handleGetUserProfile(e){
       this.getOpenid()
       const openid=this.data.openid

@@ -1,6 +1,6 @@
 // pages/search/search.js
 let Timeid=-1 //防抖的定时器
-import {RequestService} from '../../utils/requestService'
+import {RequestService} from '../../utils/monitor/requestService'
 let requestService=new RequestService()
 Page({
 
