@@ -22,4 +22,4 @@ url="../../components/addRequest/addRequest?id=-1">发布委托</navigator>
 <navigator wx:else url="../login/login" bindtap="handleUnlog">我接受的委托</navigator>
 <navigator wx:if="{{userinfo.openid}}" url="../myTask/myTask?id={{userinfo.openid}}&who=1">我发布的委托</navigator>
 <navigator wx:else url="../login/login" bindtap="handleUnlog">我发布的委托</navigator>
-<view>个人信息:{{userinfo.nickName}}{{userinfo.openid}}</view>
+<!--<view>个人信息:{{userinfo.nickName}}{{userinfo.openid}}</view>-->
