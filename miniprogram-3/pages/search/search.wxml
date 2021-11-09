@@ -1,8 +1,18 @@
 <!--pages/search/search.wxml-->
-<view class="search">
+<!-- <view class="search">
     <input value="{{inputValue}}" placeholder="请输入要搜索的内容" type="text" bindinput="getInput"/>
     <button hidden="{{!isFocus}}" bindtap="handleClear">清空</button>
-</view>
+</view> -->
+
+<!-- TODO（黄卓雁）：连接组件的前后端 -->
+<van-search
+  value="{{ inputValue }}"
+  placeholder="请输入搜索关键词"
+  show-action
+  bind:search="onSearch"
+  bind:cancel="onCancel"
+/>
+
 <view class="check">
     <checkbox-group bindchange="handleChange">
         <checkbox checked="{{item.default}}" wx:for="{{checkboxList}}" value="{{item.value}}" wx:key="{{item.id}}" >

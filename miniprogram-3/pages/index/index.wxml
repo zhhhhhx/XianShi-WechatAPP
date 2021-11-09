@@ -1,6 +1,99 @@
 <!--index.wxml-->
+
+<!-- 搜索栏 -->
+<!-- TODO（肖梓洪）：实现搜索页面的跳转，组件详情参考https://youzan.github.io/vant-weapp/#/search -->
 <view class="xian_index">
-    <searchInput></searchInput>
-    <view>这里是首页内容 进度0</view>
+    <van-search value="{{ value }}" placeholder="请输入搜索关键词" />
+    <!-- <searchInput></searchInput> -->
+    <!-- <view>这里是首页内容 进度0</view> -->
 </view>
-<!--<button bindtap="a">点这里</button>-->
+
+<!-- 首页图片轮播 -->
+<view>
+  <swiper
+    indicator-dots="{{true}}"  
+    autoplay="{{true}}"
+    style="width: 750rpx;">
+    <swiper-item>
+      <!-- TODO（钟卓江）目前使用网络图片作为占位，换成我们自己的图片 -->
+      <image src="https://picsum.photos/200"></image>
+    </swiper-item>
+    <swiper-item>
+      <image src="https://picsum.photos/250"></image>
+    </swiper-item>
+    <swiper-item>
+      <image src="https://picsum.photos/300"></image>
+    </swiper-item>
+  </swiper>
+</view>
+
+<!-- 分类和视图切换 -->
+<i-row>
+    <i-col span="21" i-class="col-class">
+            <!-- 委托、问答、交易的分类切换 -->
+            <!-- TODO（肖梓洪）：参考分类实现切换功能 -->
+            <i-tabs current="{{ current }}" bindchange="handleChange">
+                <i-tab key="tab1" title="委托"></i-tab>
+                <i-tab key="tab2" title="问答"></i-tab>
+                <i-tab key="tab3" title="交易"></i-tab>
+            </i-tabs>
+    </i-col>
+    <i-col span="3" i-class="col-class">
+        <!-- 切换视图按钮 -->
+        <!-- TODO（肖梓洪）：参考分类实现切换视图功能 -->
+        <image mode="heightFix" class="top_img" bindtap="handleView" src="{{RequestViewImg[0]}}" style="width: 85rpx; height: 90rpx; display: inline-block; box-sizing: border-box"></image>
+    </i-col>
+</i-row>
+
+
+
+<!-- 推荐列表 -->
+<!-- TODO（肖梓洪）：参考分类实现委托列表自动生成功能 -->
+<view>
+  <i-cell-group>
+    <!-- TODO（肖梓洪） i-cell的url是点击后会跳转到的详情界面，待传参数后实现 -->
+    <!-- TODO（肖梓洪） thumb：图片内容先用网络图片占位，待传参数后实现 -->
+    <!-- 第一个卡片 -->
+    <i-cell is-link url="/components/requestItem/requestItem" >
+      <i-card title="推荐的委托" extra="委托内容" thumb="https://picsum.photos/350" >
+        <view slot="content">价格</view>
+        <view slot="footer">尾部内容</view>
+      </i-card>
+    </i-cell>
+
+    <!-- 第二个卡片 -->
+    <i-cell is-link url="/components/requestItem/requestItem" >
+      <i-card title="推荐的委托" extra="委托内容" thumb="https://picsum.photos/320" >
+        <view slot="content">价格</view>
+        <view slot="footer">尾部内容</view>
+      </i-card>
+    </i-cell>
+    
+    <!-- 第3个卡片 -->
+    <!-- 参考文档https://youzan.github.io/vant-weapp/#/card -->
+    <i-cell is-link url="/components/requestItem/requestItem" >
+        <van-card
+          num="999（物品数量）"
+          tag="标签"
+          price="10.00"
+          desc="交易描述"
+          title="交易标题"
+          thumb="https://picsum.photos/400" 
+        >
+          <!-- <view slot="footer">
+            <van-button size="mini">按钮</van-button>
+            <van-button size="mini">按钮</van-button>
+          </view> -->
+        </van-card>
+    </i-cell>
+
+    <!-- 第4个卡片 -->
+    <i-cell is-link url="/components/requestItem/requestItem" >
+      <i-card title="推荐的委托" extra="委托内容" thumb="https://picsum.photos/450" >
+        <view slot="content">价格</view>
+        <view slot="footer">尾部内容</view>
+      </i-card>
+    </i-cell>
+</i-cell-group>
+</view>
+
