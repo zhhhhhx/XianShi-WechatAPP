@@ -4,7 +4,7 @@
     <button hidden="{{!isFocus}}" bindtap="handleClear">清空</button>
 </view> -->
 
-<!-- TODO（黄卓雁）：连接组件的前后端 -->
+<!-- TODO：连接组件的前后端 -->
 <van-search
   value="{{ inputValue }}"
   placeholder="请输入搜索关键词"
@@ -13,6 +13,7 @@
   bind:cancel="onCancel"
 />
 
+<!-- 筛选，目前是搜标题和搜内容 -->
 <view class="check">
     <checkbox-group bindchange="handleChange">
         <checkbox checked="{{item.default}}" wx:for="{{checkboxList}}" value="{{item.value}}" wx:key="{{item.id}}" >
@@ -20,6 +21,30 @@
         </checkbox>
     </checkbox-group>
 </view>
+
+<!-- 历史记录 -->
+<!-- TODO：修改跳转的url -->
+<i-cell-group>
+    <i-cell title="历史记录1" is-link url="/pages/request/request"></i-cell>
+    <i-cell title="历史记录2" is-link url="/pages/request/request"></i-cell>
+    <i-cell title="历史记录3" is-link url="/pages/request/request"></i-cell>
+</i-cell-group>
+
+<!-- 热门推荐 -->
+<!-- TODO：修改跳转的url -->
+<van-cell-group>
+  <van-cell 
+  title="热门推荐" 
+  icon="fire-o"   
+  link-type="navigateTo"
+  url="/pages/request/request"/>
+  <van-cell 
+  title="热门推荐" 
+  icon="fire-o"   
+  link-type="navigateTo"
+  url="/pages/request/request"/>
+</van-cell-group>
+
 <view>
     <view class="first_tab">
         <!-- wx:if用于过滤掉有接受人和自己发布的委托 -->

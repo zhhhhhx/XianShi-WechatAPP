@@ -42,32 +42,40 @@
         <!-- 切换视图按钮 -->
         <!-- TODO（肖梓洪）：参考分类实现切换视图功能 -->
         <image mode="heightFix" class="top_img" bindtap="handleView" src="{{RequestViewImg[0]}}" style="width: 85rpx; height: 90rpx; display: inline-block; box-sizing: border-box"></image>
+        <!-- <i-icon type="createtask" size="30" color="#80848f" /> -->
+        <!-- <van-icon style="width: 87rpx; height: 104rpx; display: inline-flex; box-sizing: border-box"  name="apps-o" size="35" color="#80848f" /> -->
     </i-col>
 </i-row>
 
 
 
 <!-- 推荐列表 -->
-<!-- TODO（肖梓洪）：参考分类实现委托列表自动生成功能 -->
+<!-- TODO（肖梓洪）：参考分类实现委托列表自动生成功能和跳转功能 -->
+<!-- TODO（肖梓洪） thumb：图片内容先用网络图片占位，待传参数后实现 -->
 <view>
   <i-cell-group>
-    <!-- TODO（肖梓洪） i-cell的url是点击后会跳转到的详情界面，待传参数后实现 -->
-    <!-- TODO（肖梓洪） thumb：图片内容先用网络图片占位，待传参数后实现 -->
-    <!-- 第一个卡片 -->
-    <i-cell is-link url="/components/requestItem/requestItem" >
-      <i-card title="推荐的委托" extra="委托内容" thumb="https://picsum.photos/350" >
+    <!-- 第一种列表视图 -->
+      <i-card1 title="推荐委托标题很长长长长长长长长长长长长长长长长长长长长长长长长长长" extra="委托内容也很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长" thumb="https://picsum.photos/350" >
         <view slot="content">价格</view>
         <view slot="footer">尾部内容</view>
-      </i-card>
-    </i-cell>
-
-    <!-- 第二个卡片 -->
-    <i-cell is-link url="/components/requestItem/requestItem" >
-      <i-card title="推荐的委托" extra="委托内容" thumb="https://picsum.photos/320" >
-        <view slot="content">价格</view>
-        <view slot="footer">尾部内容</view>
-      </i-card>
-    </i-cell>
+      </i-card1>
+    
+    
+    <!-- 第二种图片视图 -->
+    <i-row>
+      <i-col span="12" i-class="col-class">
+          <i-card2 title="推荐委托标题很长长长长长长长长长长长长长长长长长长长长长长长长长长" extra="委托内容也很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长" thumb="https://picsum.photos/360" >
+            <view slot="content">价格</view>
+            <view slot="footer">尾部内容</view>
+          </i-card2>
+      </i-col>
+      <i-col span="12" i-class="col-class">
+          <i-card2 title="推荐的委托" extra="委托内容" thumb="https://picsum.photos/380" >
+            <view slot="content">价格</view>
+            <view slot="footer">尾部内容</view>
+          </i-card2>
+      </i-col>
+    </i-row>
     
     <!-- 第3个卡片 -->
     <!-- 参考文档https://youzan.github.io/vant-weapp/#/card -->

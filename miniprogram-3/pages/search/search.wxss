@@ -1,6 +1,6 @@
 /* pages/search/search.wxss */
 Page{
-    background-color: gray;
+    background-color: rgb(255, 255, 255);
 }
 .search {
     margin: 10rpx;
@@ -75,3 +75,4 @@ Page{
   .info_price{
     color: red;
   }
+  

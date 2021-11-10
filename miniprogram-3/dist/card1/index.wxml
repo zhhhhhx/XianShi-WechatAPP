@@ -1,0 +1,17 @@
+<view class="i-class i-card {{ full ? 'i-card-full' : '' }}">
+    <view class="i-class i-card-header">
+        <i-row>
+            <i-col span="6" i-class="col-class">
+                <image class="i-card-thumb" src="{{ thumb }}" mode="aspectFit" wx:if="{{ thumb }}" />
+            </i-col>
+            <i-col span="14" offset="2" i-class="col-class">
+                <view >
+                    <view class="i-card-title">{{ title }}</view>
+                    <view class="i-card-extra" wx:if="{{ extra }}">{{ extra }}</view>
+                </view>
+            </i-col>
+        </i-row>    
+    <view class="i-class i-card-body"><slot name="content"></slot></view>
+    </view>
+    <view class="i-class i-card-footer"><slot name="footer"></slot></view>
+</view>
