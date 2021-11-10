@@ -102,12 +102,12 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-       this.getDBList()
+    //    this.getDBList()
        
-       wx.cloud.database().collection('request').count()
-        .then(res=>{
-            totalNum=res.total
-        })
+    //    wx.cloud.database().collection('request').count()
+    //     .then(res=>{
+    //         totalNum=res.total
+    //     })
     },
 
     /**
