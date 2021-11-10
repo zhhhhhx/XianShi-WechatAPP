@@ -2,6 +2,7 @@
   "component": true,
   "usingComponents": {
     "i-row": "../../dist/row/index",
-    "i-col": "../../dist/col/index"
+    "i-col": "../../dist/col/index",
+    "van-icon": "../../distVant/icon/index"
   }
 }
