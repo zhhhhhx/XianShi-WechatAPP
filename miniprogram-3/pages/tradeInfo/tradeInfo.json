@@ -1,0 +1,14 @@
+{
+  "usingComponents": {
+    "i-page": "../../dist/page/index",
+    "i-collapse": "../../dist/collapse/index",
+    "i-collapse-item": "../../dist/collapse-item/index",
+    "i-steps": "../../dist/steps/index",
+    "i-step": "../../dist/step/index",
+    "i-cell-group": "../../dist/cell-group/index",
+    "i-cell": "../../dist/cell/index",
+    "i-panel": "../../dist/panel/index"
+  },
+  "navigationBarTitleText": "委托详情",
+  "enablePullDownRefresh": true
+}
