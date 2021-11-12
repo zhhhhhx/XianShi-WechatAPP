@@ -20,19 +20,16 @@ Component({
    */
   data: {
     // 显示控制，false不显示，true显示下拉列表
-    type: false,
-    radio: false,
     sort: false,
-    multi: false,
+    task: false,
+    price: false,
     // 筛选栏的数据来源
-    typeData: {},
-    radioData: {},
     sortData: {},
-    multiData: {},
-    typeSelected: '0',
-    radioSelected: '0',
+    taskData: {},
+    priceData: {},
     sortSelected: '0',
-    multiSelected: [],
+    taskSelected: '0',
+    priceSelected: '0',
     // 返回筛选下来的参数对象数组
     selectedArray: []
   },
@@ -43,10 +40,9 @@ Component({
   attached() {
     if (this.properties.mode === 'position') {
       this.setData({
-        typeData: positionData.typeData,
-        radioData: positionData.radioData,
         sortData: positionData.sortData,
-        multiData: positionData.multiData
+        taskData: positionData.taskData,
+        priceData: positionData.priceData
       })
     }
   },
@@ -56,39 +52,27 @@ Component({
    */
   methods: {
     // 第一项类型的下拉列表激活（同时隐藏其他的下拉列表）
-    onTypeActive: function(e) {
+    onSortActive: function(e) {
       this.setData({
-        type: !this.data.type,//取反，点一下打开，再点一下关闭
-        radio: false,
-        sort: false,
-        multi: false
+        sort: !this.data.sort,//取反，点一下打开，再点一下关闭
+        task: false,
+        price: false
       })
     },
     // 第二项单选的下拉列表的激活
-    onRadioActive: function(e) {
+    onTaskActive: function(e) {
       this.setData({
-        type: false,
-        radio: !this.data.radio,//取反，点一下打开，再点一下关闭
         sort: false,
-        multi: false
+        task: !this.data.task,//取反，点一下打开，再点一下关闭
+        price: false
       })
     },
     // 第三项的排序的下拉列表的激活
-    onSortActive: function(e) {
+    onPriceActive: function(e) {
       this.setData({
-        type: false,
-        radio: false,
-        sort: !this.data.sort,//取反，点一下打开，再点一下关闭
-        multi: false
-      })
-    },
-    // 第四项的筛选下拉列表的激活
-    onMultiActive: function(e) {
-      this.setData({
-        type: false,
-        radio: false,
         sort: false,
-        multi: !this.data.multi//取反，点一下打开，再点一下关闭
+        task: false,
+        price: !this.data.price,//取反，点一下打开，再点一下关闭
       })
     },
     // 向数组添加唯一参数（小程序没有集合set对象）
@@ -115,29 +99,6 @@ Component({
       }
     },
  
-     // 单选
-     onType: function(e) {
-      this.closeFilter()
-      this.setData({
-        typeSelected: e.target.dataset.item.value
-      })
-      this.addUnique2Array(this.data.selectedArray, e)
-      this.triggerEvent('confirm', {
-        selectedArray: this.data.selectedArray
-      })
-    },
-
-    // 单选
-    onRadio: function(e) {
-      this.closeFilter()
-      this.setData({
-        radioSelected: e.target.dataset.item.value
-      })
-      this.addUnique2Array(this.data.selectedArray, e)
-      this.triggerEvent('confirm', {
-        selectedArray: this.data.selectedArray
-      })
-    },
     // 排序
     onSort: function(e) {
       this.closeFilter()
@@ -149,40 +110,38 @@ Component({
         selectedArray: this.data.selectedArray
       })
     },
-    // 多项筛选
-    onMultiChange: function(e) {
-      this.addUnique2Array(this.data.multiSelected, {
-        group: {
-          value: e.target.dataset.group.value,
-          label: e.target.dataset.group.label
-        },
-        item: {
-          value: e.target.dataset.item.value,
-          label: e.target.dataset.item.label
-        }
-      })
+
+     // 委托
+     onTask: function(e) {
+      this.closeFilter()
       this.setData({
-        multiSelected: this.data.multiSelected
+        taskSelected: e.target.dataset.item.value
       })
       this.addUnique2Array(this.data.selectedArray, e)
-      this.triggerEvent('multiChange', {
-        selectedArray: this.data.selectedArray
-      })
-    },
-    onMultiReset: function() {},
-    onMultiConfirm: function() {
-      this.closeFilter()
       this.triggerEvent('confirm', {
         selectedArray: this.data.selectedArray
       })
     },
+
+    
+    // 价格
+    onPrice: function(e) {
+      this.closeFilter()
+      this.setData({
+        priceSelected: e.target.dataset.item.value
+      })
+      this.addUnique2Array(this.data.selectedArray, e)
+      this.triggerEvent('confirm', {
+        selectedArray: this.data.selectedArray
+      })
+    },
+    
     // 关闭筛选
     closeFilter: function() {
       this.setData({
-        type: false,
-        radio: false,
         sort: false,
-        multi: false,
+        task: false,
+        price: false
       })
     },
   }
