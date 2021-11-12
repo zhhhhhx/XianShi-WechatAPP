@@ -17,8 +17,7 @@
     "van-search": "../../distVant/search/index",
     "van-card": "../../distVant/card/index",
     "van-button": "../../distVant/button/index",
-    "van-icon": "../../distVant/icon/index",
-    "i-icon": "../../dist/icon/index"
+    "van-icon": "../../distVant/icon/index"
   },
   "navigationBarTitleText": "闲拾"
 }

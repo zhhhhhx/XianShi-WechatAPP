@@ -1,7 +1,18 @@
 {
   "usingComponents": {
     "Tabs":"../../components/Tabs/Tabs",
-    "searchInput":"../../components/searchInput/searchInput"
+    "searchInput":"../../components/searchInput/searchInput",
+    "i-tabs": "../../dist/tabs/index",
+    "i-tab": "../../dist/tab/index",
+    "van-search": "../../distVant/search/index",
+    "i-row": "../../dist/row/index",
+    "i-col": "../../dist/col/index",
+    "van-icon": "../../distVant/icon/index",
+    "i-card1":"../../dist/card1/index",
+    "i-card2": "../../dist/card2/index",
+    "filterbarRequest": "/components/filterbarRequest/index",
+    "i-sticky": "../../dist/sticky/index",
+    "i-sticky-item": "../../dist/sticky-item/index"
   },
   "navigationBarTitleText": "分类",
   "enablePullDownRefresh": true
