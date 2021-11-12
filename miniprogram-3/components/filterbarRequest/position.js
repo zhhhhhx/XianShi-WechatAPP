@@ -82,9 +82,15 @@ const tradeData = {
   }]
 }
 
+const priceData = {
+  value: '4',
+  label: '价格区间'
+}
+
 module.exports = {
   sortData: sortData,
   taskData: taskData,
   questionData: questionData,
-  tradeData: tradeData
+  tradeData: tradeData,
+  priceData: priceData
 }

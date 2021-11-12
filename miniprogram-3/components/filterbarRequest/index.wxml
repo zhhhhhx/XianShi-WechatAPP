@@ -12,7 +12,7 @@
   </view>
   <!-- 第三个tab:价格区间 -->
   <view class="nav-item borders-right {{ price ? 'active' : '' }}" bindtap="onPriceActive">
-    <view class="content">{{ sortData.label }}</view>
+    <view class="content">{{ priceData.label }}</view>
     <view class="icon dropdownIcon" />
   </view>
 </view>
@@ -36,9 +36,17 @@
 
 <!-- 第3个图标对应的下拉列表 -->
 <view class="filter {{ price ? 'show' : 'hide' }} ">
-  <block wx:for="{{ sortData.children }}" wx:key="unique">
-    <view class="item {{ priceSelected === item.value ? 'active' : '' }}" data-group="{{ priceData }}" data-item="{{ item }}" bindtap="onPrice">{{ item.label }}</view>
-  </block>
+  <i-row>
+    <i-col span="9" offset="2" i-class="col-class">
+      <i-input1 value="{{ value6 }}" type="number"  mode="wrapped" placeholder="最低价格" maxlength="8" style="border-radius: 10%x;background-color: #f6f6f6"/>
+    </i-col>
+    <i-col span="2" i-class="col-class">
+      <view class="center-text"> ~ </view>
+    </i-col>
+    <i-col span="9" i-class="col-class">
+      <i-input1 value="{{ value6 }}" type="number"  mode="wrapped" placeholder="最高价格" maxlength="8" />
+    </i-col>
+  </i-row>
 </view>
 
 <wxs module="common">

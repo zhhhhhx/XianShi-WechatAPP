@@ -26,6 +26,7 @@ Component({
     // 筛选栏的数据来源
     sortData: {},
     taskData: {},
+    priceData: {},
     sortSelected: '0',
     taskSelected: '0',
     priceSelected: '0',
@@ -40,7 +41,8 @@ Component({
     if (this.properties.mode === 'position') {
       this.setData({
         sortData: positionData.sortData,
-        taskData: positionData.taskData
+        taskData: positionData.taskData,
+        priceData: positionData.priceData
       })
     }
   },
@@ -68,8 +70,8 @@ Component({
     // 第三项的排序的下拉列表的激活
     onPriceActive: function(e) {
       this.setData({
+        sort: false,
         task: false,
-        radio: false,
         price: !this.data.price,//取反，点一下打开，再点一下关闭
       })
     },
