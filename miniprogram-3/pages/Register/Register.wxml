@@ -1,0 +1,19 @@
+<i-panel title="账号信息">
+    <i-input value="{{ value2 }}" type="number" title="手机号" placeholder="请输入手机号" />
+    <i-input value="{{ value3 }}" type="password" title="密码" placeholder="请输入密码" maxlength="20" />
+    <i-input value="{{ value3 }}" type="password" title="密码确认" placeholder="请再次输入密码" maxlength="20" />
+</i-panel>
+
+<i-panel title="验证信息">
+    <i-row>
+    <i-col span="18" offset="0" i-class="col-class">
+    <i-input value="{{ value2 }}" type="number" title="验证码" placeholder="请输入手机验证码" maxlength="20" />
+    </i-col>
+    </i-row>
+</i-panel>
+
+<i-col style="position: relative; left: 0rpx; top: 0rpx" span="6" offset="18" i-class="col-class">
+    <i-button bind:click="handleClick" type="ghost" size="small" style="position: relative; left: 0rpx; top: -122rpx">发送</i-button>
+</i-col>
+<i-button style="position: relative; left: 0rpx; top: 0rpx" bind:click="handleClick" type="primary" shape="circle" size="small">注册</i-button>
+

@@ -1,0 +1,60 @@
+<image style="position: relative; width: 750rpx; height: 366rpx; display: inline-block; box-sizing: border-box; left: 0rpx; top: 0rpx" src="https://mmbiz.qpic.cn/mmbiz_png/icTdbqWNOwNQ0ia79enzYJBsZ3CIkLQGe39qeOxbpT9oM9KaCthzBa0PF75xzBGjZQGlM69TDggxpNX7ACibCjjtw/0?wx_fmt=png&t=1614824466" />
+<i-page current="{{ current }}" total="5" mode="pointer" bind:change="handleChange"></i-page>
+<i-panel title="委托人与接受人" hide-top>
+    <view style="padding: 15px;">这里写委托人和接受委托的人</view>
+</i-panel>
+<i-panel title="截止时间" hide-top>
+    <view style="padding: 15px;">这里写截止时间</view>
+</i-panel>
+<i-panel title="报酬" hide-top>
+    <view style="padding: 15px;">这里写报酬</view>
+</i-panel>
+<view class="caption-wrap">
+    <i-collapse name="{{name}}">
+        <i-collapse-item title="委托内容" name="name1">
+            <view slot="content">
+                这里写具体内容
+            </view>
+        </i-collapse-item>
+        <i-collapse-item title="隐藏内容" name="name2">
+            <view slot="content" i-class-content="green-text">
+                这里写隐藏内容
+            </view>
+        </i-collapse-item>
+    </i-collapse>
+</view>
+
+<i-steps>
+    <i-step status="finish">
+        <view slot="title">
+              已接受
+        </view>
+        <view slot="content">
+            该委托已被接受
+        </view>
+    </i-step>
+    <i-step status="process">
+        <view slot="title">
+            进行中
+        </view>
+        <view slot="content">
+            委托正在进行中
+        </view>
+    </i-step>
+    <i-step status="">
+        <view slot="title">
+            委托完成
+        </view>
+        <view slot="content">
+            接受方完成委托
+        </view>
+    </i-step>
+    <i-step status="">
+        <view slot="title">
+            确认完成
+        </view>
+        <view slot="content">
+            委托方确认委托完成
+        </view>
+    </i-step>
+</i-steps>

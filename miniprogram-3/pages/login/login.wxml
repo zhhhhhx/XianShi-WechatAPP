@@ -1,3 +1,21 @@
-<!--pages/login/login.wxml-->
-<button type="primary" plain open-type="getUserProfile" bindtap="handleGetUserProfile">登录</button>
-
+<i-row style="position: relative; left: 0rpx; top: 250rpx">
+    <i-col span="20" offset="2" i-class="col-class">
+    <i-input value="{{ value2 }}" type="number" title="账号" placeholder="请输入手机号或账号ID" maxlength="20" />
+    </i-col>
+    <i-col span="2" offset="0" i-class="col-class"></i-col>
+</i-row>
+<i-row style="position: relative; left: 0rpx; top: 250rpx">
+    <i-col span="20" offset="2" i-class="col-class">
+    <i-input value="{{ value3 }}" type="password" title="密码" placeholder="请输入密码" maxlength="20" />
+    </i-col>
+    <i-col span="2" offset="0" i-class="col-class"></i-col>
+</i-row>
+<i-row style="position: relative; left: 0rpx; top: 250rpx">
+    <i-col span="10" offset="2" i-class="col-class">
+    <i-button bind:click="handleClick" type="success" shape="circle" size="small">登录</i-button>
+    </i-col>
+    <i-col span="10" offset="0" i-class="col-class">
+    <i-button bind:click="handleClick" type="primary" shape="circle" size="small">注册</i-button>
+    </i-col>
+    <i-col span="2" offset="0" i-class="col-class"></i-col>
+</i-row>
