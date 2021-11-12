@@ -8,15 +8,15 @@
 <van-search value="{{ inputValue }}" placeholder="请输入搜索关键词" show-action bind:search="onSearch" bind:cancel="onCancel" />
 
 <!-- 筛选，目前是搜标题和搜内容 -->
-<view class="check">
+<!-- <view class="check">
     <checkbox-group bindchange="handleChange">
         <checkbox checked="{{item.default}}" wx:for="{{checkboxList}}" value="{{item.value}}" wx:key="{{item.id}}">
             {{item.name}}
         </checkbox>
     </checkbox-group>
-</view>
+</view> -->
 
-<filterbar mode="position" top="310rpx" bind:confirm="onFilterConfirm" bind:multiChange="onMultiChange" />
+<filterbarSearch mode="position" top="310rpx" bind:confirm="onFilterConfirm" bind:multiChange="onMultiChange" />
 
 <!-- 热门推荐 -->
 <!-- TODO：修改跳转的url -->
