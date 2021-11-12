@@ -4,7 +4,8 @@
     "i-cell-group": "../../dist/cell-group/index",
     "i-cell": "../../dist/cell/index",
     "van-cell": "../../distVant/cell/index",
-    "van-cell-group": "../../distVant/cell-group/index"
+    "van-cell-group": "../../distVant/cell-group/index",
+    "filterbarSearch": "/components/filterbarSearch/index"
   },
   "navigationBarTitleText": "搜索"
 }

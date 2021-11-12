@@ -5,7 +5,7 @@
             <searchInput></searchInput>
             <image mode="heightFix" class="top_img" bindtap="handleView" src="{{RequestViewImg[0]}}"></image>
         </view>
-       
+    
         <view></view>
         <!-- 委托的模块 -->
         <view class="first_tab">

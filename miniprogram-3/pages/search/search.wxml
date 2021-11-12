@@ -5,58 +5,54 @@
 </view> -->
 
 <!-- TODO：连接组件的前后端 -->
-<van-search
-  value="{{ inputValue }}"
-  placeholder="请输入搜索关键词"
-  show-action
-  bind:search="onSearch"
-  bind:cancel="onCancel"
-/>
+<van-search value="{{ inputValue }}" placeholder="请输入搜索关键词" show-action bind:search="onSearch" bind:cancel="onCancel" />
 
 <!-- 筛选，目前是搜标题和搜内容 -->
-<view class="check">
+<!-- <view class="check">
     <checkbox-group bindchange="handleChange">
-        <checkbox checked="{{item.default}}" wx:for="{{checkboxList}}" value="{{item.value}}" wx:key="{{item.id}}" >
+        <checkbox checked="{{item.default}}" wx:for="{{checkboxList}}" value="{{item.value}}" wx:key="{{item.id}}">
             {{item.name}}
         </checkbox>
     </checkbox-group>
-</view>
+</view> -->
 
-<!-- 历史记录 -->
-<!-- TODO：修改跳转的url -->
-<i-cell-group>
-    <i-cell title="历史记录1" is-link url="/pages/request/request"></i-cell>
-    <i-cell title="历史记录2" is-link url="/pages/request/request"></i-cell>
-    <i-cell title="历史记录3" is-link url="/pages/request/request"></i-cell>
-</i-cell-group>
+<filterbarSearch mode="position" top="310rpx" bind:confirm="onFilterConfirm" bind:multiChange="onMultiChange" />
 
 <!-- 热门推荐 -->
 <!-- TODO：修改跳转的url -->
 <van-cell-group>
-  <van-cell 
-  title="热门推荐" 
-  icon="fire-o"   
-  link-type="navigateTo"
-  url="/pages/request/request"/>
-  <van-cell 
-  title="热门推荐" 
-  icon="fire-o"   
-  link-type="navigateTo"
-  url="/pages/request/request"/>
+    <i-cell title="热门搜索" style="font-weight:bold;font-size:30px;"></i-cell>
+    <van-cell title="热门推荐" icon="fire-o" link-type="navigateTo" url="/pages/request/request" />
+    <van-cell title="热门推荐" icon="fire-o" link-type="navigateTo" url="/pages/request/request" />
 </van-cell-group>
+
+<!-- 历史记录 -->
+<!-- TODO：修改跳转的url -->
+<van-cell-group>
+    <i-cell title="历史记录" style="font-weight:bold;font-size:30px;"></i-cell>
+    <van-cell title="历史记录1" link-type="navigateTo" url="/pages/request/request"></van-cell>
+    <van-cell title="历史记录2" link-type="navigateTo" url="/pages/request/request"></van-cell>
+    <van-cell title="历史记录3" link-type="navigateTo" url="/pages/request/request"></van-cell>
+</van-cell-group>
+
+<!-- 清空历史记录 -->
+<!-- TODO：最好加上 wx:if="{{searchHistory.length > 0}}" 才显示的条件 -->
+<view class="clearHistoryBtn" >
+    <view class="clearHistoryBtn-grid1" bindtap="clearHistory">
+        <icon type="clear" size="11" />
+        <text class="noHisitory historyBar-records-text">清空历史记录</text>
+    </view>
+</view>
+
 
 <view>
     <view class="first_tab">
         <!-- wx:if用于过滤掉有接受人和自己发布的委托 -->
-        <navigator class="item" 
-        wx:for="{{requestList}}" 
-        wx:if="{{!item.receiver || item.publisher==userinfo.openid}}"  
-        wx:key="index"
-        url="../../components/requestItem/requestItem?id={{item._id}}">
+        <navigator class="item" wx:for="{{requestList}}" wx:if="{{!item.receiver || item.publisher==userinfo.openid}}" wx:key="index" url="../../components/requestItem/requestItem?id={{item._id}}">
             <!-- 左边是图片容器 暂时随便用一张图片-->
             <view class="img_wrap">
                 <image mode="widthFix" wx:if="{{item.img.length>0}}" src="{{item.img[0]}}"></image>
-                    <!-- 默认图片 -->
+                <!-- 默认图片 -->
                 <image mode="widthFix" src="../../icon/noPictures.png"></image>
             </view>
             <!-- 右边是文字容器 -->
@@ -66,8 +62,7 @@
                 <view class="info_desc">{{item.body}}
                 </view>
                 <view class="info_price">报酬: {{item.price}}元</view>
-                </view>
-        </navigator>           
+            </view>
+        </navigator>
     </view>
 </view>
-
