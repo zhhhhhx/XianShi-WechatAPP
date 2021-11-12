@@ -76,3 +76,17 @@ Page{
     color: red;
   }
   
+  .clearHistoryBtn {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .clearHistoryBtn icon {
+    margin-right:5rpx; 
+  }
+  
+  .clearHistoryBtn-grid1 {
+    padding: 20rpx;
+    padding-right: 40rpx;
+    padding-left: 40rpx;
+  }
