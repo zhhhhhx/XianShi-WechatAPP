@@ -7,33 +7,57 @@
 <view wx:if="{{!isHidden}}">
     <checkbox-group class="first_wrap" bindchange="handleChange">
         <checkbox hidden="{{isHidden}}"  wx:for="{{informationList}}" wx-key="{{item._id}}"  value="{{item._id}}">
-            <navigator wx:if="{{item.type}}" url="{{'../../components/requestItem/requestItem?id='+item.request_id+'&who=1'}}" class="first_information">
-    <view>
-        <view>{{item.content}}</view>
-        <view>委托名：{{item.title}} 接受人：{{item.receiver_name}}</view>
-    </view> 
-            </navigator>
-            <navigator wx:if="{{!item.type}}" url="{{'../../components/requestItem/requestItem?id='+item._id+'&who=0'}}" class="first_information">
-    <view>
-        <view>{{item.content}}</view>
-        <view>委托名：{{item.title}} 发布人：{{item.publisher_name}}</view>
-    </view>
-            </navigator>
+        <navigator wx:if="{{item.type==1}}" url="{{'../../components/requestItem/requestItem?id='+item.request_id+'&who=1'}}" class="first_information">
+            <view>
+                <view>{{item.content}}</view>
+                <view>委托名：{{item.title}} 接受人：{{item.receiver_name}}</view>
+            </view> 
+        </navigator>
+        <navigator wx:if="{{item.type==-1}}" url="{{'../../components/requestItem/requestItem?id='+item._id+'&who=0'}}" class="first_information">
+        <view>
+            <view>{{item.content}}</view>
+            <view>委托名：{{item.title}} 发布人：{{item.publisher_name}}</view>
+        </view>
+    </navigator>
+        <navigator wx:if="{{item.type==2}}" url="{{'../../components/tradeItem/tradeItem?id='+item.trade_id+'&who=1'}}" class="first_information">
+            <view>
+                <view>{{item.content}}</view>
+                <view>交易名：{{item.title}} 接受人：{{item.receiver_name}}</view>
+            </view> 
+        </navigator>
+        <navigator wx:if="{{item.type==-2}}" url="{{'../../components/tradeItem/tradeItem?id='+item._id+'&who=0'}}" class="first_information">
+            <view>
+                <view>{{item.content}}</view>
+                <view>交易名：{{item.title}} 发布人：{{item.publisher_name}}</view>
+            </view>
+        </navigator>
         </checkbox>
     </checkbox-group>        
 </view>
 
 <view wx:if="{{isHidden}}" wx:for="{{informationList}}" wx:key="{{item._id}}">
-    <navigator bindlongpress="handleLongpress" wx:if="{{item.type}}" url="{{'../../components/requestItem/requestItem?id='+item.request_id+'&who=1'}}" class="information">
+    <navigator bindlongpress="handleLongpress" wx:if="{{item.type==1}}" url="{{'../../components/requestItem/requestItem?id='+item.request_id+'&who=1'}}" class="information">
     <view>
         <view>{{item.content}}</view>
         <view>委托名：{{item.title}} 接受人：{{item.receiver_name}}</view>
     </view> 
     </navigator>
-    <navigator bindlongpress="handleLongpress" wx:if="{{!item.type}}" url=".{{'../../components/requestItem/requestItem?id='+item.request_id+'&who=0'}}" class="information">
+    <navigator bindlongpress="handleLongpress" wx:if="{{item.type==-1}}" url=".{{'../../components/requestItem/requestItem?id='+item.request_id+'&who=0'}}" class="information">
     <view>
         <view>{{item.content}}</view>
         <view>委托名：{{item.title}} 发布人：{{item.publisher_name}}</view>
     </view>
     </navigator>
+    <navigator wx:if="{{item.type==2}}" url="{{'../../components/tradeItem/tradeItem?id='+item.trade_id+'&who=1'}}" class="first_information">
+            <view>
+                <view>{{item.content}}</view>
+                <view>交易名：{{item.title}} 接受人：{{item.receiver_name}}</view>
+            </view> 
+        </navigator>
+        <navigator wx:if="{{item.type==-2}}" url="{{'../../components/tradeItem/tradeItem?id='+item._id+'&who=0'}}" class="first_information">
+            <view>
+                <view>{{item.content}}</view>
+                <view>交易名：{{item.title}} 发布人：{{item.publisher_name}}</view>
+            </view>
+        </navigator>
 </view>

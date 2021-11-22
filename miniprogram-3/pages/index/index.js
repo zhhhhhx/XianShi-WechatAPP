@@ -12,16 +12,11 @@ Page({
     viewType:true, //视图种类 true表示带图，false表示无图
     requestList:[] //委托列表
   },
-  a(){
-    wx.requestSubscribeMessage({
-      tmplIds: ['-ylCZtWdD92Pv5tWHtUkUm4YnglWw_szTQMHJ_90gJQ'],
-      success(res){
-          console.log('订阅成功',res)
-      },
-      fail(res){
-          console.log('订阅失败',res)
-      }
-  }) 
+  jump(){
+   console.log(1)
+    wx.navigateTo({
+      url: '../search/search',
+    })
   },
   /**
    * 生命周期函数--监听页面加载
