@@ -1,3 +1,4 @@
+<button type="primary" plain open-type="getUserProfile" bindtap="handleGetUserProfile">登录</button>
 <i-row style="position: relative; left: 0rpx; top: 250rpx">
     <i-col span="20" offset="2" i-class="col-class">
     <i-input value="{{ value2 }}" type="number" title="账号" placeholder="请输入手机号或账号ID" maxlength="20" />

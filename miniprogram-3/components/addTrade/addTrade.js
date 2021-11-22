@@ -1,6 +1,6 @@
-// components/addRequest/addRequest.js
-import {RequestService} from '../../utils/monitor/requestService'
-let requestService=new RequestService()
+// components/addtrade/addtrade.js
+import {TradeService} from '../../utils/monitor/tradeService'
+let tradeService=new TradeService()
 
 Page({
 
@@ -16,13 +16,13 @@ Page({
         body:'',
         img:[],
         newImg:[],
-        hidden:'',
         price:'',
         publishTime:'',
         publisher: '',
         publisher_name:'',
         receiver:'',
-        receiver_name: ''       
+        receiver_name: '',
+        state:1       
     },
     //获取标题
     getTitle(e){
@@ -65,14 +65,6 @@ Page({
         let {img}=this.data
         img.splice(index,1)
         this.setData({img})
-     },
-     //获取重要信息
-     getHidden(e){
-        this.setData({
-            hidden:e.detail.value
-        })
-        wx.setStorageSync('hidden', e.detail.value)
-        console.log('获取重要信息 '+this.data.hidden)
      },
      //获取价格
      getPrice(e){
@@ -126,8 +118,8 @@ Page({
         // }
         return true
      },
-     //提交委托到数据库
-     uploadRequest(){
+     //提交交易到数据库
+     uploadtrade(){
          let openid=this.data.userinfo.openid
          if(openid==1){ //预防云函数失效导致未能获取openid
                 wx.cloud.callFunction({ //重新调用云函数
@@ -150,7 +142,6 @@ Page({
         let data={
             title:this.data.title,
             body:this.data.body,
-            hidden:this.data.hidden,
             price:this.data.price,
             img:this.data.newImg,
             publishTime:'',
@@ -158,9 +149,9 @@ Page({
             publisher_name:this.data.userinfo.nickName,
             receiver:'',
             receiver_name:'',
-            state:1 //委托状态 1表示可接受 
+            state:1 //交易状态 1表示可接受 
         }
-        let res=requestService.dbAdd('request',data,'发布成功')
+        let res=tradeService.dbAdd('trade',data,'发布成功')
         res.then(function(result){
             if(result){
                 
@@ -175,41 +166,9 @@ Page({
                 // wx.clearStorage()
                 wx.setStorageSync('title', '')
                 wx.setStorageSync('body', '')
-                wx.setStorageSync('hidden', '')
                 wx.setStorageSync('price', '')
             }
         })
-
-        // wx.cloud.database().collection('request').add({
-        // data:{
-        //     title:this.data.title,
-        //     body:this.data.body,
-        //     hidden:this.data.hidden,
-        //     price:this.data.price,
-        //     img:this.data.newImg,
-        //     publishTime:'',
-        //     publisher: userinfo.openid,
-        //     publisher_name:userinfo.nickName,
-        //     receiver:'',
-        //     receiver_name:'' 
-        // },
-        // success(res){
-        //     console.log('发布成功', res)
-        //     wx-wx.navigateBack({
-        //         delta: 1
-        //     });
-        //     wx.showToast({
-        //         title: '发布成功',
-        //       })  
-        //     // wx.clearStorage()
-        //     wx.setStorageSync('title', '')
-        //     wx.setStorageSync('body', '')
-        //     wx.setStorageSync('hidden', '')
-        //     wx.setStorageSync('price', '')
-        // }
-        // })
-
-        /*用户支付酬金*/
      },
      //提交图片到云存储
      uploadImg(){
@@ -223,8 +182,8 @@ Page({
               mask:true
             })
             let promiseArr = []; //promise操作 实现同步请求
-            /* 不做promise的话，代码默认会异步实现，上传图片和上传委托会同时运行，而上传图片花费时间要长出数倍，所以会使得上传完委托而图片还在上传中，导致委托中图片不全甚至无图片 
-            用setTimeout可以强制延长上传委托的时间，但不够灵活 
+            /* 不做promise的话，代码默认会异步实现，上传图片和上传交易会同时运行，而上传图片花费时间要长出数倍，所以会使得上传完交易而图片还在上传中，导致交易中图片不全甚至无图片 
+            用setTimeout可以强制延长上传交易的时间，但不够灵活 
             目前发现即使使用promise，图片上传顺序仍然有误*/
             img.forEach((v,j) =>{
               promiseArr.push(new Promise((reslove, reject) => { //此处每次循环都会在promiseArr数组中添加一个Promise对象
@@ -244,7 +203,7 @@ Page({
                   },
                   fail:console.error
               })
-              // if(j==img.length-1){ //如果全部图片上传成功，再上传委托到数据库
+              // if(j==img.length-1){ //如果全部图片上传成功，再上传交易到数据库
                  
               //     console.log('图片路径', newImg)
               //     setTimeout(that.upload,3000) //3秒后上传
@@ -259,11 +218,11 @@ Page({
               })
               console.log('图片路径', newImg)
               // setTimeout(that.upload,3000) //3秒后上传
-              that.uploadRequest()
+              that.uploadtrade()
           })
           }
           else{
-              that.uploadRequest()
+              that.uploadtrade()
           }
      },
 
@@ -295,56 +254,34 @@ Page({
                 that.uploadImg()
             }
         }) 
-
-        
-        // while(i!=img.length){
-        //     wx.cloud.uploadFile({
-        //         cloudPath: new Date().getTime()+'.png', //上传后的图片名 用时间戳的方式命名
-        //         filePath: img[i], //上传前的文件路径
-        //         success(res){
-        //           console.log('上传图片成功',res)
-        //         //   that.setData({ //newImg用于储存新的图片路径
-        //         //     newImg: [...newImg, ...res.fileID]
-        //         //   })
-        //           that.data.newImg.push(res.fileID)
-        //           console.log('--', newImg)
-        //           i+=1
-        //           if(i==img.length){
-        //             console.log('图片路径', newImg)
-        //             wx.hideLoading();
-        //           }
-        //         },
-        //         fail:console.error
-        //     })
-        // }
         
     },
-    //修改委托
+    //修改交易
      handleChange(){
          let that=this
         const item=that.data.item
         console.log('修改',item)
-        if(item.receiver!=''){
+        if(item.state!=1 && item.state!=0){
             wx.showToast({
-                title: '此委托已被领取，无法修改或删除',
+                title: '此商品已被购买，无法修改或删除',
                 icon: 'error',
               })
               return
         }
-        //TODO 修改图片
         let data={
                 title:that.data.title,
                 body:that.data.body,
-                hidden:that.data.hidden,
+                price: that.data.price,
+                state:that.data.state
             }
             console.log('data',data)
-        let res=requestService.dbUpdate ('request',item._id,data,'更新成功')
+        let res=tradeService.dbUpdate ('trade',item._id,data,'更新成功')
         res.then(function(result){
             if(result){
                 wx.showToast({
                     title: '修改成功',
                   })
-                  setTimeout(function(){
+                setTimeout(function(){
                     wx-wx.navigateBack({
                         delta: 1,
                     })
@@ -355,25 +292,6 @@ Page({
                 wx.setStorageSync('price', '')
             }
         })
-
-        // wx.cloud.database().collection('request').doc(item._id)
-        // .update({
-        //     data:{
-        //         title:item.title,
-        //         body:item.body,
-        //         hidden:item.hidden,
-        //     },
-        //     success: function(res) {
-        //         console.log('更新成功',res)
-        //         wx.showToast({
-        //           title: '修改成功',
-        //         })
-        //       },
-        //     fail(res){
-        //         console.log('更新失败',res)
-        //     }
-            
-        // })
      },
      
      //删除前弹窗提示
@@ -393,20 +311,20 @@ Page({
         })
      },
 
-     //删除委托
+     //删除交易
      delete(){
          let that=this
         const item=this.data.item
         console.log('删除')
-        if(item.receiver!=''){
+        if(item.state!=1 && item.state!=0){
             wx.showToast({
-                title: '此委托已被领取，无法修改或删除',
+                title: '此商品已被购买，无法修改或删除',
                 icon: 'error',
               })
               return
         }
 
-        let res=requestService.dbDelete('request',item._id,'删除成功')
+        let res=tradeService.dbDelete('trade',item._id,'删除成功')
         res.then(function(result){
             if(result){
                 if(that.data.item.img!=[]){ //删除云存储的图片
@@ -430,27 +348,6 @@ Page({
                 },500)
             }
         })
-        // wx.cloud.database().collection('request').doc(item._id)
-        // .remove({
-        //     success: function(res) {
-        //         console.log('删除成功',res)
-        //         console.log(that.data.item.img)
-        //         if(that.data.item.img!=[]){ //删除云存储的图片
-        //             wx.cloud.deleteFile({
-        //                 fileList: that.data.item.img,
-        //                 success: res =>{
-        //                     console.log('图片删除成功')
-        //                 },
-        //                 fail: err => {
-        //                     console.error();
-        //                   },
-        //             })
-        //         }
-        //         wx.showToast({
-        //           title: '删除成功',
-        //         })
-        //     }
-        // })
      },
 
     /**
@@ -464,7 +361,7 @@ Page({
             publisher: userinfo.openid,
             publisher_name: userinfo.nickName
         })
-        //如果是从'个人中心'的'发布委托'跳转来
+        //如果是从'个人中心'的'发布交易'跳转来
         if(options.id==-1){
             this.setData({
                 options:0
@@ -474,18 +371,16 @@ Page({
             this.setData({title})
             let body=wx.getStorageSync('body')
             this.setData({body})
-            let hidden=wx.getStorageSync('hidden')
-            this.setData({hidden})
             let price=wx.getStorageSync('price')
             this.setData({price})
         }
-        //从'我发布的委托'跳转来
+        //从'我发布的交易'跳转来
         else{
             this.setData({
                 optionsId:options.id
             })
 
-            let res=requestService.dbDocument('request',options.id,'发布页获取成功')
+            let res=tradeService.dbDocument('trade',options.id,'发布页获取成功')
             res.then(function(result){
                 if(result!=false){
                     that.setData({
@@ -493,41 +388,22 @@ Page({
                         options:1,
                         title:result.data.title,
                         body:result.data.body,
-                        hidden:result.data. hidden,
+                        price:result.data.price,
                         receiver: result.data.receiver,
-                        receiver_name:result.data.receiver_name
+                        receiver_name:result.data.receiver_name,
+                        img:result.data.img,
+                        newImg:result.data.img,
+                        state:result.data.state
                     })
                 }
                 else {
                     console.log('发布页获取失败',res)
                     wx.showToast({
-                        title: '委托已完成或已删除',
+                        title: '交易已完成或已删除',
                         icon:'none'
                     })
                 }
             })
-
-            // wx.cloud.database().collection('request')
-            // .doc(options.id)
-            // .get().then(res=>{
-            //     console.log('发布页获取成功',res)
-            //     this.setData({
-            //         item:res.data,
-            //         options:1,
-            //         title:res.data.title,
-            //         body:res.data.body,
-            //         hidden:res.data. hidden,
-            //         receiver: res.data.receiver,
-            //         receiver_name:res.data.receiver_name
-            //     })
-            // })
-            // .catch(res=>{
-            //     console.log('发布页获取失败',res)
-            //     wx.showToast({
-            //       title: '委托已完成或已删除',
-            //       icon:'none'
-            //     })
-            // }) 
         }
     },
 

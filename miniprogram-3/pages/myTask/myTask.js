@@ -7,6 +7,7 @@ Page({
      * 页面的初始数据
      */
     data: {
+        options:{},
         requestList:[],
         userinfo:{},
         who:0, //0表示接收者（默认），1表示发布者
@@ -32,6 +33,9 @@ Page({
     onLoad: function (options) {
         let that=this
         console.log(options)
+        that.setData({
+            options:options
+        })
         const userinfo=wx.getStorageSync('userinfo')
         that.setData({userinfo})
         const who=options.who
@@ -118,7 +122,11 @@ Page({
      * 生命周期函数--监听页面隐藏
      */
     onHide: function () {
-
+        this.setData({
+            requestList:[],
+            url:'../../components/requestItem/requestItem?id='
+        })
+        this.onLoad(this.data.options)
     },
 
     /**
@@ -132,7 +140,7 @@ Page({
      * 页面相关事件处理函数--监听用户下拉动作
      */
     onPullDownRefresh: function () {
-        
+        this.onHide()
     },
 
     /**

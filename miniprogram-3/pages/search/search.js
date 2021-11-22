@@ -8,7 +8,8 @@ Page({
      * 页面的初始数据
      */
     data: {
-      checkboxList:[
+      database:'request', //查询的数据库名 默认为委托库
+      checkboxList:[ //复选框
         {
           id:0,
           name:'搜标题',
@@ -22,19 +23,70 @@ Page({
           default:false
         }
       ],
-      checkResult:['title'],
-      requestList:[],
+      checkResult:'title', //搜索对象选取结果
+      resultList:[], //查询结果
       isFocus:false, //是否隐藏清空按钮
       inputValue:''
     },
 
-    //获取复选框的勾选情况
-    handleChange(e){
-      this.setData({
-        checkResult: e.detail.value
-      })
-      console.log(this.data.checkResult)
+    //类型选择
+    onFilterConfirm(e){
+      console.log(e)
+      let that=this
+      array=e.detail.selectedArray
+      for (item in array){
+        value=item.value
+        console.log(value)
+        switch (value){
+          case '0:0': {//类型为委托
+            that.setData({
+              database:'request'
+            })
+            break
+          }
+          // case '0:1':{ //类型为问答
+          //   that.setData({
+          //     database:'question'
+          //   })
+          // }
+          case '0:2':{ //类型为交易
+            that.setData({
+              database:'trade'
+            })   
+            break   
+          }
+          case '1:0':{ //标题
+            that.setData({
+              checkResult:'title'
+            }) 
+            break
+          }
+          case '1:1':{ //内容
+            that.setData({
+              checkResult:'body'
+            }) 
+            break
+          }
+          case '1:2':{ //全部
+            that.setData({
+              checkResult:'all'
+            }) 
+            break
+          }
+        }
+      }
     },
+    onSearch(e){
+      console.log(e)
+    },
+
+    // //获取复选框的勾选情况
+    // handleChange(e){
+    //   this.setData({
+    //     checkResult: e.detail.value
+    //   })
+    //   console.log(this.data.checkResult)
+    // },
 
     // //判断字符串是否在列表内
     // isIn(str,list){
@@ -50,15 +102,17 @@ Page({
 
     // 获取用户输入的关键词
     getInput(options){
+      console.log(options.detail)
       let that=this
-      const {value}=options.detail;
+      const value=options.detail;
+      console.log(typeof(value))
       let checkResult=that.data.checkResult;
       // console.log(checkResult)
       // let t='title'
       // console.log(t in checkResult)
       if (!value.trim() || checkResult.length==0){   //trim()检查输入合法性
         that.setData({
-          requestList:[],
+          resultList:[],
           isFocus:false
         })
         return;
@@ -69,25 +123,25 @@ Page({
       const _ = wx.cloud.database().command
       clearTimeout(that.Timeid) //清除定时器
       that.Timeid=setTimeout(()=>{
-        if(checkResult.length==2){ //如果两个都选了，就同时检索标题和内容
+        if(checkResult=='all'){ //同时检索标题和内容
           let where=(
             _.or({
               title: wx.cloud.database().RegExp({
-                regexp: options.detail.value,  
+                regexp: value,  
                 options:'i'
               })
             },
             {body: wx.cloud.database().RegExp({
-              regexp: options.detail.value ,
+              regexp: value ,
               options:'i'
               })
             })
           )
-          let res=requestService.dbSearch('request',where,'搜索成功')
+          let res=requestService.dbSearch(that.data.database,where,'搜索成功')
           res.then(function(result){
             if(result!=false){
               that.setData({
-                requestList:[...that.data.requestList,...result.data]
+                resultList:[...that.data.resultList,...result.data]
               })
             }
           })
@@ -95,12 +149,12 @@ Page({
           // wx.cloud.database().collection('request')
           // .where(_.or({
           //   title: wx.cloud.database().RegExp({
-          //     regexp: options.detail.value,  
+          //     regexp: value,  
           //     options:'i'
           //   })
           // },
           // {body: wx.cloud.database().RegExp({
-          //   regexp: options.detail.value ,
+          //   regexp: value ,
           //   options:'i'
           //   })
           // }
@@ -108,26 +162,25 @@ Page({
           // .get().then(res=>{
           //   console.log('搜索成功',res)
           //   this.setData({
-          //     requestList:[...this.data.requestList,...res.data]
+          //     resultList:[...this.data.resultList,...res.data]
           //   })
           // })
           // .catch(res=>{
           //   console.log('搜索失败',res)
           // })
         }
-        else if(checkResult.length==1){ //如果只选了一个
-          if(checkResult[0]=='title'){ //选了标题
+        else if(checkResult=='title'){ //选了标题
             let where={
               title: wx.cloud.database().RegExp({
-                regexp: options.detail.value,  
+                regexp: value,  
                 options:'i'
               })
             }
-            let res=requestService.dbSearch('request',where,'搜索成功')
+            let res=requestService.dbSearch(that.data.database,where,'搜索成功')
             res.then(function(result){
               if(result!=false){
                 that.setData({
-                  requestList:[...that.data.requestList,...result.data]
+                  resultList:[...that.data.resultList,...result.data]
                 })
               }
             })
@@ -135,32 +188,32 @@ Page({
             // wx.cloud.database().collection('request')
             // .where({
             //   title: wx.cloud.database().RegExp({
-            //     regexp: options.detail.value,  
+            //     regexp: value,  
             //     options:'i'
             //   })
             // })
             // .get().then(res=>{
             //   console.log('搜索标题成功',res)
             //   this.setData({
-            //     requestList:[...this.data.requestList,...res.data]
+            //     resultList:[...this.data.resultList,...res.data]
             //   })
             // })
             // .catch(res=>{
             //   console.log('搜索标题失败',res)
             // })
           }
-          if(checkResult[0]=='body'){ //选了内容
+         else if(checkResult=='body'){ //选了内容
             let where={
               body: wx.cloud.database().RegExp({
-                regexp: options.detail.value ,
+                regexp: value ,
                 options:'i'
               })
             }
-            let res=requestService.dbSearch('request',where,'搜索成功')
+            let res=requestService.dbSearch(that.data.database,where,'搜索成功')
             res.then(function(result){
               if(result!=false){
                 that.setData({
-                  requestList:[...that.data.requestList,...result.data]
+                  resultList:[...that.data.resultList,...result.data]
                 })
               }
             })
@@ -168,27 +221,27 @@ Page({
             // wx.cloud.database().collection('request')
             // .where({
             //   body: wx.cloud.database().RegExp({
-            //     regexp: options.detail.value ,
+            //     regexp: value ,
             //     options:'i'
             //   })
             // })
             // .get().then(res=>{
             //   console.log('搜索内容成功',res)
             //   this.setData({
-            //     requestList:[...this.data.requestList,...res.data]
+            //     resultList:[...this.data.resultList,...res.data]
             //   })
             // })
             // .catch(res=>{
             //   console.log('搜索内容失败',res)
             // })
           }
-        }
+        
       },500) //0.5秒后发送请求，0.5秒内有新输入则刷新
     },
     //清空搜索框
     handleClear(){
       this.setData({
-        requestList:[],
+        resultList:[],
         isFocus:false,
         inputValue:''
       })
