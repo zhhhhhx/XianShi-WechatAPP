@@ -4,7 +4,7 @@ let utils=require('../../utils/util.js')
 // // let RequestObserver=require('../../utils/monitor/requestObserver')
 // let obs=new RequestObserver()
 const app=getApp()
-let obs=app.globalData.obs
+let obs=app.globalData.obs1
 import {RequestService} from '../../utils/monitor/requestService'
 let requestService=new RequestService()
 requestService.addObs(obs)
@@ -47,8 +47,8 @@ Page({
 
         // if(that.data.requestItem.publisher==that.data.userInfo.openid){
         //     wx.showToast({
-        //         title: '不能接受\r\n自己的委托', //不会换行
-        //         icon:'error'
+        //         title: '不能接受自己的委托', 
+        //         icon:'none'
         //       })
         //     return
         // }
@@ -138,12 +138,12 @@ Page({
         res.then(function(result){
             if(result){
 
-                /*对此用户施加惩罚*/
+                /*SHOULD DO对此用户施加惩罚*/
 
                 //刷新上一页面
                 const page=getCurrentPages()
                 const beforePage=page[page.length-2]
-                beforePage.onLoad(userInfo.openid)
+                beforePage.onHide()
                 //回到上一页
                 wx.showToast({
                     title: '已放弃此委托',
@@ -197,7 +197,7 @@ Page({
                 //刷新上一页面
                 const page=getCurrentPages()
                 const beforePage=page[page.length-2]
-                beforePage.onLoad(that.data.userInfo.openid)
+                beforePage.onHide()
                 //回到上一页
                 wx.showToast({
                     title: '已通知委托人，请耐心等待回应',
@@ -260,9 +260,19 @@ Page({
         let res=requestService.dbUpdate('request',that.data.requestItem._id,data,'修改状态成功')
         res.then(function(result){
             if(result){
+                //刷新上一页面
+                const page=getCurrentPages()
+                const beforePage=page[page.length-2]
+                beforePage.onHide()
                 wx.showToast({
                   title: '已确认委托',
                 })
+                //返回
+                setTimeout(function(){
+                    wx-wx.navigateBack({
+                        delta: 1,
+                    })
+                },500) 
             }
             /*系统支付报酬给接受人 完成委托*/
         })
@@ -397,7 +407,7 @@ Page({
         // })
     },
 
-    //点击图片放大
+    //TODO 点击图片放大
     handleImg(){
         /* data里设置一个属性 
         用于wx:if 切换样式 */
@@ -412,7 +422,7 @@ Page({
     onLoad: function (options) {
         let that=this
         console.log('委托详情页接收到',options)
-        requestService.setId(options.id) //伪监听者提供此委托id
+        requestService.setId(options.id) //为监听者提供此委托id
         if(options.who==0 ||options.who==1){
             this.setData({
                 who: options.who

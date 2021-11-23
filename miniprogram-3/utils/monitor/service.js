@@ -154,6 +154,16 @@ class Service{
         })
         
     }
+    dbCount(db){
+        let that=this
+        return new Promise((reslove, reject) =>{
+            wx.cloud.database().collection(db).count().then(res=>{
+                console.log('查询委托数据成功',res)
+                reslove(res)
+            })
+        })
+        
+    }
     //读所有数据 每次读20条 尝试着用非promise形式封装
     getDBList(that,DB,listName,list,totalNum){//参数分别为this指针，数据库表名，存放结果的列表名，存放结果的列表，数据库表总长度
         let len=list.length //获取数组长度 用来跳过
@@ -167,7 +177,10 @@ class Service{
         wx.showLoading({ //提示用户目前正加载下一页
           title: '加载中',
         })
-        wx.cloud.database().collection(DB).skip(len).get()
+        wx.cloud.database().collection(DB).skip(len)
+        .where({
+            state:1
+        }).get()
         .then(res=>{ //箭头函数可以直接用this 不需要that
             console.log('获取成功',res)
             that.setData({

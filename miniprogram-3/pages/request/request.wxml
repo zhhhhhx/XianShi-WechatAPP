@@ -1,69 +1,131 @@
 <!--pages/request/request.wxml-->
-<Tabs tabs="{{tabs}}" binditemChange="handleItemChange">
-    <block wx:if="{{tabs[0].isActive}}">
-        <view class="search"> 
-            <searchInput></searchInput>
-            <image mode="heightFix" class="top_img" bindtap="handleView" src="{{RequestViewImg[0]}}"></image>
-        </view>
-       
-        <view></view>
-        <!-- 委托的模块 -->
-        <view class="first_tab">
-            <!-- wx:if用于过滤掉有接受人和自己发布的委托 -->
-            <navigator class="item" 
-            wx:for="{{requestList}}" 
-            wx:if="{{!item.receiver || item.publisher==userinfo.openid}}"  
-            wx:key="index"
-            url="../../components/requestItem/requestItem?id={{item._id}}">
-                <!-- 左边是图片容器 -->
-                <view wx:if="{{viewType}}" class="img_wrap">
-                    <image class="request_image" mode="aspectFill" wx:if="{{item.img.length>0}}" src="{{item.img[0]}}"></image>
-                    <!-- 默认图片 -->
-                    <image wx:else mode="aspectFit" src="../../icon/noPictures.png"></image>
-                   
-                </view>
-                <!-- 右边是文字容器 -->
-                <view wx:if="{{viewType}}" class="info_wrap">
-                    <view class="info_name"> {{item.title}}
-                    </view>
-                    <view class="info_desc">{{item.body}}
-                    </view>
-                    <view class="info_price">报酬: {{item.price}}元</view>
-                </view>
-                <view wx:else class="info_wrap">
-                    <view class="info_name"> {{item.title}}
-                    </view>
-                    <view class="info_desc">{{item.body}}
-                    </view>
-                    <view class="info_price">报酬: {{item.price}}元</view>
-                </view>
-            </navigator>           
-        </view>
-    </block>
-    <block wx:elif="{{tabs[1].isActive}}">这是问答 进度0</block>
+
+<!-- TODO： tab页的切换、列表的循环、图片的url、点击委托跳转到详情页面等等都还没做，这部分基本参考首页那部分。除了排序的策略以外-->
+<!-- tabs栏 -->
+<i-row>
+    <i-col span="21" i-class="col-class">
+        <!-- 委托、问答、交易的分类切换 -->
+        <!-- TODO（肖梓洪）：参考分类实现切换功能 -->
+        <i-tabs current="{{ current }}" bindchange="handleChange">
+            <i-tab key="tab0" title="委托" class="{{current==0? 'active':''}}"></i-tab>
+            <i-tab key="tab1" title="问答" class="{{current==1? 'active':''}}"></i-tab>
+            <i-tab key="tab2" title="交易" class="{{current==2? 'active':''}}"></i-tab>
+        </i-tabs>
+    </i-col>
+    <i-col span="3" i-class="col-class">
+        <!-- 切换视图按钮 -->
+        <!-- TODO：参考分类实现切换视图功能 -->
+        <!-- <image mode="heightFix" class="top_img" bindtap="handleView" src="{{RequestViewImg[0]}}" style="width: 85rpx; height: 90rpx; display: inline-block; box-sizing: border-box"></image> -->
+        <van-icon bindtap="handleView"
+            style="display: flex; justify-content: center; align-items: center; margin:10rpx;" name="apps-o" size="35"
+            color="#80848f " />
+    </i-col>
+</i-row>
+
+<!-- 搜索栏 -->
+<!-- TODO：加上搜索页面入口 -->
+<van-search bindtap="jump" value="{{ value }}" placeholder="请输入搜索关键词" />
+
+<!-- 筛选栏 -->
+<filterbarRequest mode="position" top="310rpx" bind:confirm="onFilterConfirm" bind:multiChange="onMultiChange" />
+
+<!-- 第一个tab页内容 -->
+<block wx:if="{{current == 0}}" wx:for="{{requestList}}">
+    <navigator wx:if="{{viewType}}" url="../../components/requestItem/requestItem?id={{item._id}}">
+        <!-- 下面是列表 -->
+        <!-- wx:if="{{!item.receiver && item.publisher!=userinfo.openid}}">过滤自己发的委托 -->
+        <i-card1 bindtap="handleJump" wx:if="{{item.state==1}}" title="{{item.title}}" extra="{{item.body}}"
+            thumb="{{item.img.length==0? '../../icon/noPictures.png': item.img[0]}}" price="{{item.price}}"
+            other="华南理工大学 C10 606 ">
+        </i-card1>
+    </navigator>
+    <navigator wx:if="{{!viewType}}" url="../../components/requestItem/requestItem?id={{item._id}}">
+        <block wx:if="{{index%2==0}}">
+            <i-card2 bindtap="handleJump" wx:if="{{item.state==1}}" title="{{item.title}}" extra="{{item.body}}"
+                thumb="{{item.img.length==0? '../../icon/noPictures.png': item.img[0]}}" price="{{item.price}}"
+                other="华南理工大学 C10 606 ">
+            </i-card2>
+            <i-card2 bindtap="handleJump" wx:if="{{requestList[index+1].state==1}}" title="{{requestList[index+1].title}}" extra="{{item.body}}"
+                thumb="{{requestList[index+1].img.length==0? '../../icon/noPictures.png': requestList[index+1].img[0]}}" price="{{requestList[index+1].price}}"
+                other="华南理工大学 C10 606 ">
+            </i-card2>
+        </block>
+    </navigator>
+    <!-- 下面是列表 -->
+    <!-- <i-card1 title="推荐委托标题很长长长长长长长长长长长长长长长长长长长长长长长长长长" extra="委托内容也很长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长长" thumb="https://picsum.photos/350" price="10.00" other="华南理工大学 C10 606 ">
+    </i-card1> -->
+</block>
+
+<!-- 第二个tab页内容 -->
+<block wx:if="{{current == 1}}">敬请期待</block>
+
+<!-- 第三个tab页内容 -->
+<block wx:if="{{current == 2}}" wx:for="{{tradeList}}">
+    <!-- wx:if="{{!item.receiver && item.publisher!=userinfo.openid}}"> -->
+    <i-card1 wx:if="{{!item.state}}" title="{{item.title}}" extra="{{item.body}}"
+        thumb="{{item.img.length==0? '../../icon/noPictures.png': item.img[0]}}" price="{{item.price}}"
+        other="华南理工大学 C10 606 ">
+    </i-card1>
+</block>
 
 
-    <block wx:elif="{{tabs[2].isActive}}"> 
-        <view class="trade">
-            <navigator class="trade_one" url="../../components/goodsItem/goodsItem" open-type="navigate">
-            <image class="trade_two" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdpic.tiankong.com%2Fgk%2Fjs%2FQJ7116715583.jpg"></image>
-            <view class="trade_three">商品1</view>
-            </navigator>
+<!-- ===后面的是以前黄卓雁写的的代码========================= -->
+
+<!-- 旧的tabs栏 -->
+<Tabs tabs="{{tabs}}" binditemChange="handleItemChange"></Tabs>
+
+<!-- 委托tab页内容 -->
+<block wx:if="{{tabs[0].isActive}}">
+    <!-- 搜索和切换视图的部分 -->
+    <view class="search">
+        <searchInput></searchInput>
+        <image mode="heightFix" class="top_img" bindtap="handleView" src="{{RequestViewImg[0]}}"></image>
+    </view>
+
+    <!-- 委托的模块 -->
+    <view class="first_tab">
+        <!-- wx:if用于过滤掉有接受人和自己发布的委托 -->
+        <navigator class="item" wx:for="{{requestList}}" wx:if="{{!item.receiver || item.publisher==userinfo.openid}}"
+            wx:key="index" url="../../components/requestItem/requestItem?id={{item._id}}">
+            <!-- 左边是图片容器 -->
+            <view wx:if="{{viewType}}" class="img_wrap">
+                <image class="request_image" mode="aspectFill" wx:if="{{item.img.length>0}}" src="{{item.img[0]}}">
+                </image>
+                <!-- 默认图片 -->
+                <image wx:else mode="aspectFit" src="../../icon/noPictures.png"></image>
             </view>
-            <view>
-            <navigator class="tra../../components/goodsItem/goodsItem" open-type="navigate">
-            <image class="trade_two" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdpic.tiankong.com%2Fgk%2Fjs%2FQJ7116715583.jpg"></image>
-            <view class="trade_three">商品2</view>
-            </navigator>
+            <!-- 右边是文字容器 -->
+            <view wx:if="{{viewType}}" class="info_wrap">
+                <view class="info_name"> {{item.title}}
+                </view>
+                <view class="info_desc">{{item.body}}
+                </view>
+                <view class="info_price">报酬: {{item.price}}元</view>
             </view>
-            <view>
-            <navigator class="tra../../components/goodsItem/goodsItem" open-type="navigate">
-                <image class="trade_two" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdpic.tiankong.com%2Fgk%2Fjs%2FQJ7116715583.jpg"></image>
-                <view class="trade_three">商品3</view>
-            </navigator>
-        </view>
+            <view wx:else class="info_wrap">
+                <view class="info_name"> {{item.title}}
+                </view>
+                <view class="info_desc">{{item.body}}
+                </view>
+                <view class="info_price">报酬: {{item.price}}元</view>
+            </view>
+        </navigator>
+    </view>
+</block>
 
-    </block>
-</Tabs>
+<!-- 问答模块的tab内容 -->
+<block wx:elif="{{tabs[1].isActive}}"> </block>
 
-
+<!-- 交易模块的tab页内容 -->
+<block wx:elif="{{tabs[2].isActive}}">
+    <view class="trade">
+        <!-- wx:if="{{!item.receiver && item.publisher!=userinfo.openid}}"> -->
+        <navigator wx:for="{{tradeList}}" wx:key="index" class="trade_one"
+            url="../../components/tradeItem/tradeItem?id={{item._id}}" open-type="navigate" wx:if="{{!item.receiver }}">
+            <image class="trade_two"
+                src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdpic.tiankong.com%2Fgk%2Fjs%2FQJ7116715583.jpg">
+            </image>
+            <view class="trade_three">{{item.title}}</view>
+        </navigator>
+    </view>
+</block>

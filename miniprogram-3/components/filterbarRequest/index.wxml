@@ -1,0 +1,63 @@
+<!-- tabs栏 -->
+<view class="nav">
+  <!-- 第一个tab: 排序-->
+  <view class="nav-item borders-right {{ sort ? 'active' : '' }}" bindtap="onSortActive">
+    <view class="content">{{ sortData.label }}</view>
+    <view class="icon dropdownIcon" />
+  </view>
+  <!-- 第二个tab: 委托类型 -->
+  <view class="nav-item borders-right {{ task ? 'active' : '' }}" bindtap="onTaskActive">
+    <view class="content">{{ taskData.label }}</view>
+    <view class="icon dropdownIcon" />
+  </view>
+  <!-- 第三个tab:价格区间 -->
+  <view class="nav-item borders-right {{ price ? 'active' : '' }}" bindtap="onPriceActive">
+    <view class="content">{{ priceData.label }}</view>
+    <view class="icon dropdownIcon" />
+  </view>
+</view>
+
+<!-- 筛选栏展开后的背景蒙版 -->
+<view class="mask" hidden="{{ !(sort || task || price) }}" style="top: {{ top }}" bindtap="closeFilter" />
+
+<!-- 第1个图标对应的下拉列表 -->
+<view class="filter {{ sort ? 'show' : 'hide' }} ">
+  <block wx:for="{{ sortData.children }}" wx:key="unique">
+    <view class="item {{ sortSelected === item.value ? 'active' : '' }}" data-group="{{ sortData }}" data-item="{{ item }}" bindtap="onSort">{{ item.label }}</view>
+  </block>
+</view>
+
+<!-- 第2个图标对应的下拉列表 -->
+<view class="filter {{ task ? 'show' : 'hide' }}">
+  <block wx:for="{{ taskData.children }}" wx:key="unique">
+    <view class="item {{ taskSelected === item.value ? 'active' : '' }}" data-group="{{ taskData }}" data-item="{{ item }}" bindtap="onTask">{{ item.label }}</view>
+  </block>
+</view>
+
+<!-- 第3个图标对应的下拉列表 -->
+<view class="filter {{ price ? 'show' : 'hide' }} ">
+  <i-row>
+    <i-col span="9" offset="2" i-class="col-class">
+      <i-input1 value="{{ value6 }}" type="number"  mode="wrapped" placeholder="最低价格" maxlength="8" style="border-radius: 10%x;background-color: #f6f6f6"/>
+    </i-col>
+    <i-col span="2" i-class="col-class">
+      <view class="center-text"> ~ </view>
+    </i-col>
+    <i-col span="9" i-class="col-class">
+      <i-input1 value="{{ value6 }}" type="number"  mode="wrapped" placeholder="最高价格" maxlength="8" />
+    </i-col>
+  </i-row>
+</view>
+
+<wxs module="common">
+  module.exports = {
+    selected: function (multiSelected, value) {
+      for (var i = 0; i < multiSelected.length; i++) {
+        if (multiSelected[i].value === value) {
+          return true
+        }
+      }
+      return false
+    }
+  }
+</wxs>

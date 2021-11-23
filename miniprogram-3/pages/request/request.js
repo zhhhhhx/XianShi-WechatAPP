@@ -1,5 +1,6 @@
 // pages/request/request.js
-let totalNum=-1
+let requestNum=-1
+let tradeNum=-1
 // let utils=require('../../utils/util.js')
 import {RequestService} from '../../utils/monitor/requestService'
 let requestService=new RequestService()
@@ -9,34 +10,87 @@ Page({
      * 页面的初始数据
      */
     data: {
-        tabs:[
-            {
-                id:0,
-                name:'委托',
-                isActive:true
-            },
-            {
-                id:1,
-                name:'问答',
-                isActive:false
-            },
-            {
-                id:2,
-                name:'交易',
-                isActive:false
-            }
-        ], //标题栏列表
+        // tabs:[
+        //     {
+        //         id:0,
+        //         name:'委托',
+        //         isActive:true
+        //     },
+        //     {
+        //         id:1,
+        //         name:'问答',
+        //         isActive:false
+        //     },
+        //     {
+        //         id:2,
+        //         name:'交易',
+        //         isActive:false
+        //     }
+        // ], //标题栏列表
+        current:0,
         RequestViewImg:['../../icon/view0.png','../../icon/view1.png'], //委托的视图的图标列表
         TradeViewImg:['../../icon/view0.png','../../icon/view2.png'], //交易的视图的图标列表
         viewType:true, //视图种类 true表示带图，false表示无图
-        requestList:[] //委托列表
-
+        requestList:[], //委托列表
+        tradeList:[], //交易列表
+        userinfo:{}
     },
-
+    //搜索栏跳转
+    jump(){
+        console.log(1)
+         wx.navigateTo({
+           url: '../search/search',
+         })
+       },
+    //tab切换
+    handleChange(e){
+        let that=this
+        let tab=e.detail.key
+        console.log(tab)
+        switch (tab){
+            case 'tab0':{
+                that.setData({
+                    current:0
+                })
+                break
+            }
+            case 'tab1':{
+                that.setData({
+                    current:1
+                })
+                break
+            }
+            case 'tab2':{
+                that.setData({
+                    current:2
+                })
+                break
+            }
+        }
+        this.onLoad()
+    },
+    //跳转
+    handleJump(e){
+        console.log(e)
+        switch(this.data.current){
+            // case 0:{
+            //     wx.navigateTo({
+            //       url: '../../components/requestItem/requestItem?id='+e,
+            //     })
+            //     break
+            // }
+            // case 2:{
+            //     wx.navigateTo({
+            //       url: '../../components/tradeItem/tradeItem?id='+e,
+            //     })
+            //     break
+            // }
+        }
+    },
     //切换视图
     handleView(e){
         console.log(e)
-        if(this.data.tabs[0].isActive){ //切换委托视图
+        if(this.data.current==0){ //切换委托视图
            let newImg= this.data.RequestViewImg.reverse()
            this.setData({
                RequestViewImg:newImg,
@@ -52,19 +106,20 @@ Page({
         }
     },
 
-    //处理标题栏的点击
-    handleItemChange(e){
-        const {index}=e.detail;
-        let tabs= this.data.tabs;
-        tabs.forEach((v,i)=>v.isActive=(i===index));
-        this.setData({
-            tabs
-        })
-    },
+    // //处理标题栏的点击
+    // handleItemChange(e){
+    //     const {index}=e.detail;
+    //     let tabs= this.data.tabs;
+    //     tabs.forEach((v,i)=>v.isActive=(i===index));
+    //     this.setData({
+    //         tabs
+    //     })
+    //     this.onLoad()
+    // },
     //获取数据库内的委托数据
     // getDBList(){
     //     let len=this.data.requestList.length //获取数组长度 用来跳过
-    //     if (len==totalNum){
+    //     if (len==requestNum){
     //         wx.showToast({ //显示小弹窗提示用户
     //           title: '已经到底啦',
     //           icon:'none'
@@ -91,10 +146,17 @@ Page({
     // },
 
     //将上面注释的函数封装成utils.getDBList 用于获取数据库内的委托数据
-    getDBList(){
+    getDBList(type='request'){
         let requestList=this.data.requestList
+        let tradeList=this.data.tradeList
         //参数分别为this指针，数据库表名，存放结果的列表名，存放结果的列表，数据库表总长度
-        requestService.getDBList(this,'request','requestList',requestList,totalNum)
+        if(type=='request'){
+            requestService.getDBList(this,'request','requestList',requestList,requestNum)
+        }
+        else if(type=='trade'){
+            requestService.getDBList(this,'trade','tradeList',tradeList,tradeNum)
+        }
+        
     },
 
 
@@ -102,11 +164,31 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad: function (options) {
-    //    this.getDBList()
+        this.setData({
+            userinfo:wx.getStorageSync('userinfo')
+        })
+        if(this.data.current==0){
+            this.getDBList()
+            let res=requestService.dbCount('request')
+            res.then(function(result){
+                if(result!=false){
+                    requestNum=result.total
+                }
+            })
+        }
+        else if(this.data.current==2){
+            this.getDBList('trade')
+            let res=requestService.dbCount('trade')
+            res.then(function(result){
+                if(result!=false){
+                    tradeNum=result.total
+                }
+            })
+        }
        
     //    wx.cloud.database().collection('request').count()
     //     .then(res=>{
-    //         totalNum=res.total
+    //         requestNum=res.total
     //     })
     },
 
@@ -128,10 +210,18 @@ Page({
      * 生命周期函数--监听页面隐藏
      */
     onHide: function () {
-        this.setData({
-            requestList:[]
-        })
-        this.getDBList()
+        if(this.data.current==0){
+            this.setData({
+                requestList:[]
+            })
+            this.getDBList()
+        }
+        else if(this.data.current==1){
+            this.setData({
+                tradeList:[]
+            })
+            this.getDBList('trade')
+        }
     },
 
     /**
@@ -151,7 +241,13 @@ Page({
      * 页面上拉触底事件的处理函数
      */
     onReachBottom: function () {
-        this.getDBList()
+        if(this.data.current==0){
+            this.getDBList()
+        }
+        else if(this.data.current==2){
+            this.getDBList('trade')
+        }
+        
         console.log('触底')
     },
 

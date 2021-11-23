@@ -8,8 +8,10 @@
         "pages/user/user",
         "pages/login/login",
         "pages/myTask/myTask",
-        "components/goodsItem/goodsItem",
-        "pages/information/information"
+        "components/tradeItem/tradeItem",
+        "pages/information/information",
+        "pages/myTrade/myTrade",
+        "components/addTrade/addTrade"
     ],
     "window": {
         "backgroundTextStyle": "light",

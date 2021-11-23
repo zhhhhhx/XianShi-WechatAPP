@@ -1,8 +1,11 @@
 // app.js
 let RequestObserver=require('./utils/monitor/requestObserver')
+let TradeObserver=require('./utils/monitor/tradeObserver')
 App({
   globalData:{ //全局变量
-    obs: new RequestObserver() //观察者
+    obs1: new RequestObserver(), //委托观察者
+    obs2: new TradeObserver(), //交易观察者
+
   },
   /**
    * 当小程序初始化完成时，会触发 onLaunch（全局只触发一次）

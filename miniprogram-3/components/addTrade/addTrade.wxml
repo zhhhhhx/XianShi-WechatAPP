@@ -1,0 +1,29 @@
+<!--components/addTrade/addTrade.wxml-->
+<view class="add_trade">
+    <input class="title" type="text" 
+    placeholder="请输入标题" bindinput="getTitle" value="{{title}}"> </input>
+    <view class="body_wrap">
+        <textarea placeholder="请输入商品内容，点击下方加号可上传图片" bindinput="getBody" name="" id="" cols="30" rows="20" value="{{body}}"></textarea>
+        <!-- options==0表示从’发布交易‘直接跳转 1表示从’我发布的交易‘跳转 -->
+        <view wx:if="{{options==0}}" class="add_img">
+            <button class="add_button" bindtap="handleAddImg">+</button>
+           <view class="img_item" wx:for="{{img}}" wx:key="*this" bindtap="handleRemoveImg" data-index="{{index}}">
+            <addImg src='{{item}}'></addImg>
+           </view>
+        </view>
+    </view>
+        <!-- <textarea class="hidden" placeholder="请将重要信息填写在此处" bindinput="getHidden" value="{{hidden}}" name="" id="" cols="30" rows="10"></textarea> -->
+    <input class="price" type="digit" step="0.01" placeholder="请输入价格" bindinput="getPrice" value="{{price}}"> </input>
+    <!-- <input type="text" placeholder="请选择交易时限"> </input> -->
+</view>
+<button wx:if="{{options==0}}" type="primary" bindtap="handlePublish">确认发布</button>
+<button wx:if="{{options==1 && (item.state==1||item.state==0)}}" type="primary" bindtap="handleChange">修改交易</button>
+<button wx:if="{{options==1 && (item.state==1||item.state==0)}}" type="warn" bindtap="handleDelete">取消交易</button>
+<view wx:if="{{options==1 && item.state!=1 && item.state!=0}}">
+   
+    <button type="primary" bindtap="handleConfirm">确认完成</button>
+</view>
+
+
+
+

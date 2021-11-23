@@ -331,6 +331,7 @@ Page({
               })
               return
         }
+        //TODO 修改图片
         let data={
                 title:that.data.title,
                 body:that.data.body,
@@ -343,6 +344,11 @@ Page({
                 wx.showToast({
                     title: '修改成功',
                   })
+                  setTimeout(function(){
+                    wx-wx.navigateBack({
+                        delta: 1,
+                    })
+                },500)
                 wx.setStorageSync('title', '')
                 wx.setStorageSync('body', '')
                 wx.setStorageSync('hidden', '')
@@ -417,6 +423,11 @@ Page({
                 wx.showToast({
                   title: '删除成功',
                 })
+                setTimeout(function(){
+                    wx-wx.navigateBack({
+                        delta: 1,
+                    })
+                },500)
             }
         })
         // wx.cloud.database().collection('request').doc(item._id)

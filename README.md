@@ -68,11 +68,3 @@
 6. 系统集成测试完成后将 develop branch 合并到 main branch 中，创建tag保存版本代码，main branch 和对应的 tag 是我们演示和可交付的稳定版本
 
 </details>
-    
-## 目前已知问题
-
-已经移动到[Issues](https://github.com/XianShi-APP/XianShi-WechatAPP/issues),此问题清单不再更新
-
-1. ~~发布委托页面上传图片路径无效~~
-2. ~~发布委托价格合法性检测无效~~
-3. ~~在某些操作后页面不能自动刷新 如删除自己发布的委托后，被删除的委托依然显示在页面需要手动刷新~~
